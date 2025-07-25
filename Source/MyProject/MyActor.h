@@ -30,6 +30,7 @@ private:
 	//creating a point of Hitbox
 	UBoxComponent* Hitbox;
 
+	//creating StartOverlap event
 	UFUNCTION()
 	void OnHitboxOverlap(
 		UPrimitiveComponent* OverlappedComp,

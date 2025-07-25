@@ -20,13 +20,17 @@ void UMoveObjects::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// setting start position
 	StartPosition = GetRelativeLocation();
 
+	// creating normalized vector
 	FVector NormalizedOffset = MoveOffset;
 	NormalizedOffset.Normalize();
 
+	// setting max distance 
 	MaxDistance = MoveOffset.Length();
 
+	//getting MyActor from other class
 	MyActor = Cast<AMyActor>(GetOwner());
 
 }
@@ -35,7 +39,7 @@ void UMoveObjects::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-
+	// movement logic
 	if (MyActor && MyActor->ShouldMove) {
 
 		CurrentDistance += DeltaTime * speed * Direction;
@@ -43,7 +47,8 @@ void UMoveObjects::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 		if (CurrentDistance >= MaxDistance or CurrentDistance <= 0.0f) {
 		Direction *= -1;
 		}
-	}
+		CurrentDistance = FMath::Clamp(CurrentDistance, 0.0f, MaxDistance);
 
-	SetRelativeLocation(StartPosition + MoveOffset * CurrentDistance);
+		SetRelativeLocation(StartPosition + MoveOffset * CurrentDistance);
+	}
 }

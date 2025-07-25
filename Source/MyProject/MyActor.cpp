@@ -7,10 +7,11 @@
 AMyActor::AMyActor()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 }
 
+// creating StartOverlap event
 void AMyActor::OnHitboxOverlap(
     UPrimitiveComponent* OverlappedComp,
     AActor* OtherActor,
@@ -35,7 +36,7 @@ void AMyActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// getting the real hitbox
+	// getting the hitbox from bp class
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	Hitbox = Cast<UBoxComponent>(GetDefaultSubobjectByName(TEXT("Hitbox")));
 
@@ -47,7 +48,6 @@ void AMyActor::BeginPlay()
 void AMyActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 
 }
 

@@ -57,6 +57,7 @@ void AMyCharacter::BeginPlay()
 void AMyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
 	AMyCharacter::Move(CurrentForwardValue, CurrentRightValue, DeltaTime);
 	
 }
