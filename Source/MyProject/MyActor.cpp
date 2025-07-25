@@ -39,7 +39,7 @@ void AMyActor::BeginPlay()
 	// getting the hitbox from bp class
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	Hitbox = Cast<UBoxComponent>(GetDefaultSubobjectByName(TEXT("Hitbox")));
-
+    //adding listener for beginoverlap
     Hitbox->OnComponentBeginOverlap.AddDynamic(this, &AMyActor::OnHitboxOverlap);
 
 }
