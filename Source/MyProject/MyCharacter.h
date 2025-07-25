@@ -18,11 +18,6 @@ public:
 	// Sets default values for this pawn's properties
 	AMyCharacter();
 
-
-	void Move(float ForwardValue, float RightValue);
-	void MoveForward(float Value);
-	void MoveRight(float Value);
-
 protected:	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -37,11 +32,17 @@ protected:
 	float mov_adj;
 	float CurrentForwardValue = 0.0f;
 	float CurrentRightValue = 0.0f;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+private:
+	void Move(float ForwardValue, float RightValue, float DeltaTime);
+	void MoveForward(float Value);
+	void MoveRight(float Value);
 
 };

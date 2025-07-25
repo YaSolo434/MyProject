@@ -24,27 +24,25 @@ AMyCharacter::AMyCharacter()
 	Camera->FieldOfView = 120.f;
 }
 
-void AMyCharacter::Move(float ForwardValue, float RightValue) {
+void AMyCharacter::Move(float ForwardValue, float RightValue, float DeltaTime) {
 	FVector Direction = FVector(ForwardValue, RightValue, 0.f);
 
 	if (!Direction.IsNearlyZero()) {
 		Direction.Normalize();
 		FVector NewLocation = GetActorLocation();
-		NewLocation += Direction * mov_adj;
+		NewLocation += DeltaTime * Direction * mov_adj;
 		SetActorLocation(NewLocation);
 	}
-}
+}	
 
 void AMyCharacter::MoveForward(float Value)
 {
 	CurrentForwardValue = Value;
-	Move(CurrentForwardValue, CurrentRightValue);
 }	
 
 void AMyCharacter::MoveRight(float Value)
 {
 	CurrentRightValue = Value;
-	Move(CurrentForwardValue, CurrentRightValue);
 }
 
 
@@ -59,7 +57,8 @@ void AMyCharacter::BeginPlay()
 void AMyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	AMyCharacter::Move(CurrentForwardValue, CurrentRightValue, DeltaTime);
+	
 }
 
 // Called to bind functionality to input

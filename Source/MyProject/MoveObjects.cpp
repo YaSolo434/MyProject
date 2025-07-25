@@ -2,6 +2,7 @@
 
 
 #include "MoveObjects.h"
+#include "MyActor.h"
 
 // Sets default values for this component's properties
 UMoveObjects::UMoveObjects()
@@ -26,19 +27,23 @@ void UMoveObjects::BeginPlay()
 
 	MaxDistance = MoveOffset.Length();
 
+	MyActor = Cast<AMyActor>(GetOwner());
+
 }
 // Called every frame
 void UMoveObjects::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	CurrentDistance += DeltaTime * speed * Direction;
 
-	if (CurrentDistance >= MaxDistance or CurrentDistance <= 0.0f)
-	{
+	if (MyActor && MyActor->ShouldMove) {
+
+		CurrentDistance += DeltaTime * speed * Direction;
+
+		if (CurrentDistance >= MaxDistance or CurrentDistance <= 0.0f) {
 		Direction *= -1;
+		}
 	}
 
 	SetRelativeLocation(StartPosition + MoveOffset * CurrentDistance);
 }
-

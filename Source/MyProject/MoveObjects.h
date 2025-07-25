@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Components/SceneComponent.h"
+#include "MyActor.h"
 #include "MoveObjects.generated.h"
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class MYPROJECT_API UMoveObjects : public USceneComponent
 {
-	GENERATED_BODY()
+	GENERATED_BODY(UMoveObjects)
 
 public:	
 	// Sets default values for this component's properties
@@ -32,6 +33,9 @@ private:
 	FVector MoveOffset;
 
 	FVector StartPosition;
+
+	UPROPERTY()
+	AMyActor* MyActor;
 
 	float MaxDistance;
 	float CurrentDistance;
