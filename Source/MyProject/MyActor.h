@@ -16,7 +16,8 @@ class MYPROJECT_API AMyActor : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AMyActor();
-	bool ShouldMove = false;
+	bool ShouldMove = false,
+		ShouldGoBack = false;
 
 protected:
 	// Called when the game starts or when spawned
@@ -39,5 +40,13 @@ private:
 		int32 OtherBodyIndex,
 		bool bFromSweep,
 		const FHitResult& SweepResult);
+
+	// creating EndOverlap
+	UFUNCTION()
+	void OnHitboxEndOverlap(
+		UPrimitiveComponent* OverlappedComp,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex);
 
 };

@@ -41,14 +41,19 @@ void UMoveObjects::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 
 	// movement logic
 	if (MyActor && MyActor->ShouldMove) {
-
 		CurrentDistance += DeltaTime * speed * Direction;
 
 		if (CurrentDistance >= MaxDistance or CurrentDistance <= 0.0f) {
-		Direction *= -1;
+			Direction *= -1;
 		}
 		CurrentDistance = FMath::Clamp(CurrentDistance, 0.0f, MaxDistance);
 
 		SetRelativeLocation(StartPosition + MoveOffset * CurrentDistance);
+
+		if (MyActor->ShouldGoBack) {
+			if (CurrentDistance == 0.0f) {
+				MyActor->ShouldMove = false;
+			}
+		}
 	}
 }

@@ -26,9 +26,22 @@ void AMyActor::OnHitboxOverlap(
         if (OtherActor->IsA(AMyCharacter::StaticClass()))
         {
             ShouldMove = true;
+            ShouldGoBack = false;
         }
     }
   
+}
+
+void AMyActor::OnHitboxEndOverlap(
+    UPrimitiveComponent* OverlappedComp,
+    AActor* OtherActor,
+    UPrimitiveComponent* OtherComp,
+    int32 OtherBodyIndex) {
+    
+    if (OtherActor->IsA(AMyCharacter::StaticClass())) {
+
+        ShouldGoBack = true;
+    }
 }
 
 // Called when the game starts or when spawned
@@ -41,6 +54,8 @@ void AMyActor::BeginPlay()
 	Hitbox = Cast<UBoxComponent>(GetDefaultSubobjectByName(TEXT("Hitbox")));
 
     Hitbox->OnComponentBeginOverlap.AddDynamic(this, &AMyActor::OnHitboxOverlap);
+
+    Hitbox->OnComponentEndOverlap.AddDynamic(this, &AMyActor::OnHitboxEndOverlap);
 
 }
 
