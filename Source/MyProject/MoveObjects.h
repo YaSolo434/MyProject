@@ -17,6 +17,7 @@ public:
 	// Sets default values for this component's properties
 	UMoveObjects();
 
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -40,6 +41,7 @@ private:
 	float MaxDistance;
 	float CurrentDistance;
 
+	void ChangeDirection(int Direction);
 	int Direction = 1;
 
 };

@@ -34,6 +34,12 @@ void UMoveObjects::BeginPlay()
 	MyActor = Cast<AMyActor>(GetOwner());
 
 }
+
+void UMoveObjects::ChangeDirection(int NewDirection) {
+	if (NewDirection >= 1) {
+		Direction *= -1;
+	}
+}
 // Called every frame
 void UMoveObjects::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
@@ -51,6 +57,7 @@ void UMoveObjects::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 		SetRelativeLocation(StartPosition + MoveOffset * CurrentDistance);
 
 		if (MyActor->ShouldGoBack) {
+			UMoveObjects::ChangeDirection(Direction);
 			if (CurrentDistance == 0.0f) {
 				MyActor->ShouldMove = false;
 			}

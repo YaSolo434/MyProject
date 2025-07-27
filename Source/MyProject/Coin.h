@@ -5,19 +5,17 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
-#include "MyCharacter.h"
-#include "MyActor.generated.h"
+#include "Components/StaticMeshComponent.h"
+#include "Coin.generated.h"
 
 UCLASS()
-class MYPROJECT_API AMyActor : public AActor
+class MYPROJECT_API ACoin : public AActor
 {
-	GENERATED_BODY(AMyActor)
+	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	AMyActor();
-	bool ShouldMove = false,
-		ShouldGoBack = false;
+	ACoin();
 
 protected:
 	// Called when the game starts or when spawned
@@ -28,10 +26,20 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 private:
-	//creating a point of Hitbox
-	UBoxComponent* Hitbox;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UBoxComponent* CoinHitbox;
 
-	//creating StartOverlap event
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* StaticMesh;
+
+	UPROPERTY(EditAnywhere)
+	float Velocity = 500;
+
+	bool IsJumped = false;
+
+	UPROPERTY(EditAnywhere)
+	float LiveTime = 2.0;
+
 	UFUNCTION()
 	void OnHitboxOverlap(
 		UPrimitiveComponent* OverlappedComp,
@@ -40,15 +48,4 @@ private:
 		int32 OtherBodyIndex,
 		bool bFromSweep,
 		const FHitResult& SweepResult);
-
-	// creating EndOverlap
-	UFUNCTION()
-	void OnHitboxEndOverlap(
-		UPrimitiveComponent* OverlappedComp,
-		AActor* OtherActor,
-		UPrimitiveComponent* OtherComp,
-		int32 OtherBodyIndex);
-
-
-
 };
