@@ -6,10 +6,11 @@
 #include "GameFramework/Pawn.h"
 #include "Camera/CameraComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "TakingXp.h"
 #include "MyCharacter.generated.h"
 
 UCLASS()
-class MYPROJECT_API AMyCharacter : public APawn
+class MYPROJECT_API AMyCharacter : public APawn, public ITakingXp
 {
 	GENERATED_BODY()
 
@@ -40,9 +41,13 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	void AddCoin(int Amount);
+	virtual void TakeXp() override;
 private:
 	void Move(float ForwardValue, float RightValue, float DeltaTime);
 	void MoveForward(float Value);
 	void MoveRight(float Value);
+
+	int TotalCoin;
 
 };

@@ -2,6 +2,7 @@
 
 
 #include "MyCharacter.h"
+#include "TakingXp.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -45,7 +46,13 @@ void AMyCharacter::MoveRight(float Value)
 	CurrentRightValue = Value;
 }
 
+void AMyCharacter::AddCoin(int Amount) {
+	TotalCoin += Amount;
+}
 
+void AMyCharacter::TakeXp() {
+	AddCoin(2);
+}
 
 // Called when the game starts or when spawned
 void AMyCharacter::BeginPlay()

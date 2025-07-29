@@ -2,6 +2,7 @@
 
 
 #include "MyActor.h"
+#include "MyCharacter.h"
 #include "MoveObjects.h"
 // Sets default values
 AMyActor::AMyActor()
@@ -43,7 +44,6 @@ void AMyActor::OnHitboxEndOverlap(
         ShouldGoBack = true;
     }
 }
-
 // Called when the game starts or when spawned
 void AMyActor::BeginPlay()
 {

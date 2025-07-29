@@ -4,6 +4,7 @@
 #include "Coin.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "MyCharacter.h"
 
 // Sets default values
@@ -22,6 +23,9 @@ ACoin::ACoin()
     StaticMesh->SetStaticMesh(CubeAsset.Object);
 
     StaticMesh->SetSimulatePhysics(true);
+
+    static ConstructorHelpers::FObjectFinder<USoundBase> SoundObj(TEXT("/Game/Sounds/coin.coin"));
+    CoinSound = SoundObj.Object;
 	
 }
 void ACoin::OnHitboxOverlap(
@@ -31,16 +35,21 @@ void ACoin::OnHitboxOverlap(
     int32 OtherBodyIndex,
     bool bFromSweep,
     const FHitResult& SweepResult) {
-    if (OtherActor->IsA(AMyCharacter::StaticClass()))
-    {
-        if (!IsJumped) {
-        StaticMesh->AddImpulse(FVector(0.f, 0.f, Velocity), NAME_None, true);
-        IsJumped = true;
-        
+    if (OtherActor->IsA(TriggerClass)) {
+        if (OtherActor->GetClass()->ImplementsInterface(UTakingXp::StaticClass()))
+        {
+            ITakingXp* Interface = Cast<ITakingXp>(OtherActor);
+            if (Interface)
+            {
+                Interface->TakeXp();
+
+                UGameplayStatics::PlaySoundAtLocation(this, CoinSound, GetActorLocation());
+                Destroy();
+            }
         }
     }
+    
 }
-
 // Called when the game starts or when spawned
 void ACoin::BeginPlay()
 {
@@ -54,12 +63,5 @@ void ACoin::BeginPlay()
 void ACoin::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-    if (IsJumped) {
-        LiveTime -= DeltaTime;
-    }
-    if (LiveTime <= 0.0) {
-        Destroy();
-    }
-
 }
 

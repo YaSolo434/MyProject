@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "MyCharacter.h"
+#include "Sound/SoundBase.h"
 #include "Coin.generated.h"
 
 UCLASS()
@@ -33,7 +35,7 @@ private:
 	UStaticMeshComponent* StaticMesh;
 
 	UPROPERTY(EditAnywhere)
-	float Velocity = 500;
+	float JumpVelocity = 500;
 
 	bool IsJumped = false;
 
@@ -48,4 +50,14 @@ private:
 		int32 OtherBodyIndex,
 		bool bFromSweep,
 		const FHitResult& SweepResult);
+
+	UPROPERTY(EditAnywhere)
+	UClass* TriggerClass = AMyCharacter::StaticClass();
+
+	UPROPERTY(EditAnywhere, Category = "Audio")
+	USoundBase* CoinSound;
+
+
+	//implelmenting interface
+
 };
