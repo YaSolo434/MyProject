@@ -31,8 +31,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Player Settings")
 	float mov_adj;
-	float CurrentForwardValue = 0.0f;
-	float CurrentRightValue = 0.0f;
+	float RotationSpeed = 1.0f;
 
 public:	
 	// Called every frame
@@ -44,9 +43,9 @@ public:
 	void AddCoin(int Amount);
 	virtual void TakeXp() override;
 private:
-	void Move(float ForwardValue, float RightValue, float DeltaTime);
 	void MoveForward(float Value);
 	void MoveRight(float Value);
+	void Rotate(float Value);
 
 	int TotalCoin;
 

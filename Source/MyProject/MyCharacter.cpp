@@ -25,25 +25,23 @@ AMyCharacter::AMyCharacter()
 	Camera->FieldOfView = 120.f;
 }
 
-void AMyCharacter::Move(float ForwardValue, float RightValue, float DeltaTime) {
-	FVector Direction = FVector(ForwardValue, RightValue, 0.f);
-
-	if (!Direction.IsNearlyZero()) {
-		Direction.Normalize();
-		FVector NewLocation = GetActorLocation();
-		NewLocation += DeltaTime * Direction * mov_adj;
-		SetActorLocation(NewLocation);
-	}
+void AMyCharacter::MoveForward(float Value){
+	auto Location = GetActorLocation();
+	Location += GetActorForwardVector() * Value * mov_adj;
+	SetActorLocation(Location);
 }	
-
-void AMyCharacter::MoveForward(float Value)
-{
-	CurrentForwardValue = Value;
-}	
-
+	
 void AMyCharacter::MoveRight(float Value)
 {
-	CurrentRightValue = Value;
+	auto Location = GetActorLocation();
+	Location += GetActorRightVector() * Value * mov_adj;
+	SetActorLocation(Location);
+}
+
+void AMyCharacter::Rotate(float Value) {
+	auto CurrentRot = GetActorRotation();
+	CurrentRot.Yaw += Value *  RotationSpeed;
+	SetActorRotation(CurrentRot);
 }
 
 void AMyCharacter::AddCoin(int Amount) {
@@ -64,8 +62,6 @@ void AMyCharacter::BeginPlay()
 void AMyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	AMyCharacter::Move(CurrentForwardValue, CurrentRightValue, DeltaTime);
 	
 }
 
@@ -75,4 +71,5 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	PlayerInputComponent->BindAxis(TEXT("MoveL_R"), this, &AMyCharacter::MoveRight);
 	PlayerInputComponent->BindAxis(TEXT("MoveF_B"), this, &AMyCharacter::MoveForward);
+	PlayerInputComponent->BindAxis(TEXT("Rotate"), this, &AMyCharacter::Rotate);
 }

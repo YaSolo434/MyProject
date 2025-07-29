@@ -56,7 +56,6 @@ void AMyActor::BeginPlay()
     Hitbox->OnComponentBeginOverlap.AddDynamic(this, &AMyActor::OnHitboxOverlap);
 
     Hitbox->OnComponentEndOverlap.AddDynamic(this, &AMyActor::OnHitboxEndOverlap);
-
 }
 
 // Called every frame

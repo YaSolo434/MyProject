@@ -48,7 +48,4 @@ private:
 		AActor* OtherActor,
 		UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex);
-
-
-
 };
