@@ -6,8 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
-#include "MyCharacter.h"
 #include "Sound/SoundBase.h"
+#include "MyFirstCharacter.h"
 #include "Coin.generated.h"
 
 UCLASS()
@@ -52,7 +52,7 @@ private:
 		const FHitResult& SweepResult);
 
 	UPROPERTY(EditAnywhere)
-	UClass* TriggerClass = AMyCharacter::StaticClass();
+	UClass* TriggerClass = AMyFirstCharacter::StaticClass();
 
 	UPROPERTY(EditAnywhere, Category = "Audio")
 	USoundBase* CoinSound;

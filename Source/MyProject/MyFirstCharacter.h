@@ -3,35 +3,27 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Pawn.h"
+#include "GameFramework/Character.h"
 #include "Camera/CameraComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "TakingXp.h"
-#include "MyCharacter.generated.h"
+#include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+
+#include "MyFirstCharacter.generated.h"
 
 UCLASS()
-class MYPROJECT_API AMyCharacter : public APawn, public ITakingXp
+class MYPROJECT_API AMyFirstCharacter : public ACharacter, public ITakingXp
 {
 	GENERATED_BODY()
 
-
 public:
-	// Sets default values for this pawn's properties
-	AMyCharacter();
+	// Sets default values for this character's properties
+	AMyFirstCharacter();
 
-protected:	
+protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-	UPROPERTY(EditAnywhere)	
-	UCameraComponent* Camera;
-
-	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* CameraMesh;
-
-	UPROPERTY(EditAnywhere, Category = "Player Settings")
-	float mov_adj;
-	float RotationSpeed = 1.0f;
 
 public:	
 	// Called every frame
@@ -41,12 +33,27 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	void AddCoin(int Amount);
+
 	virtual void TakeXp() override;
+
 private:
+	UPROPERTY(EditAnywhere)
+	UCameraComponent* Camera;
+
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* CharacterMesh;
+
+	UPROPERTY(EditAnywhere, Category = "Player Settings")
+	float MovementSpeed;
+	float RotationSpeed = 1.0f;
+
+	int TotalCoin;
+
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 	void Rotate(float Value);
+	void JumpPressed();
 
-	int TotalCoin;
+	virtual void Jump() override;
 
 };

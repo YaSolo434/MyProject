@@ -5,7 +5,6 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "MyCharacter.h"
 
 // Sets default values
 ACoin::ACoin()

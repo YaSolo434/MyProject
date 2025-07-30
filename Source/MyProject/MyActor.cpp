@@ -2,8 +2,6 @@
 
 
 #include "MyActor.h"
-#include "MyCharacter.h"
-#include "MoveObjects.h"
 // Sets default values
 AMyActor::AMyActor()
 {
@@ -24,7 +22,7 @@ void AMyActor::OnHitboxOverlap(
     if (OtherActor && OtherActor != this)
     {
         // Check if the overlapping actor is exactly MyCharacter (or subclass)
-        if (OtherActor->IsA(AMyCharacter::StaticClass()))
+        if (OtherActor->IsA(AMyFirstCharacter::StaticClass()))
         {
             ShouldMove = true;
             ShouldGoBack = false;
@@ -39,7 +37,7 @@ void AMyActor::OnHitboxEndOverlap(
     UPrimitiveComponent* OtherComp,
     int32 OtherBodyIndex) {
     
-    if (OtherActor->IsA(AMyCharacter::StaticClass())) {
+    if (OtherActor->IsA(AMyFirstCharacter::StaticClass())) { 
 
         ShouldGoBack = true;
     }
