@@ -9,6 +9,8 @@
 #include "TakingXp.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Sound/SoundBase.h"
+#include "Kismet/GameplayStatics.h"
 
 #include "MyFirstCharacter.generated.h"
 
@@ -44,16 +46,30 @@ private:
 	UStaticMeshComponent* CharacterMesh;
 
 	UPROPERTY(EditAnywhere, Category = "Player Settings")
-	float MovementSpeed;
+	float MovementSpeed = 800.f;
 	float RotationSpeed = 1.0f;
 
+	const int MaxJumpCount = 2;
+	int JumpCount = 0;
+
 	int TotalCoin;
+
+	UPROPERTY(EditAnywhere)
+	float DashSpeed = 600.f;
+
+	bool CanUseDash = true;
+	float BreakTime = 5.0f;
+	float CurTime = 0.f;
+
+	UPROPERTY(EditAnywhere, Category = "Audio")
+	USoundBase* DashSound;
 
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 	void Rotate(float Value);
-	void JumpPressed();
-
 	virtual void Jump() override;
+	virtual void Landed(const FHitResult& Hit) override;
 
+	void Dash(float ForwardValue, float RightValue);
+	void DashInput();
 };
