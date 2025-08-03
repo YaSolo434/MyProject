@@ -8,14 +8,19 @@ AMyFirstCharacter::AMyFirstCharacter() {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	//advanced camera
+	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+	SpringArm->SetupAttachment(GetCapsuleComponent());
+	SpringArm->TargetArmLength = 400.f;
+	SpringArm->bEnableCameraLag = true;
+	SpringArm->CameraLagSpeed = 10.f;
 	//creating camera
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	Camera->SetupAttachment(GetCapsuleComponent());
+	Camera->SetupAttachment(SpringArm);
 	Camera->FieldOfView = 120.f;
-	
-	//creating mesh
-	CharacterMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CharacterMesh"));
-	CharacterMesh->SetupAttachment(GetCapsuleComponent());
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.f, 720.f, 0.f);
 
 	//set movement stuff
 	GetCharacterMovement()->GravityScale = 2.5f;
@@ -82,10 +87,6 @@ void AMyFirstCharacter::DashInput() {
 	Dash(ForwardValue, RightValue);
 }
 
-void AMyFirstCharacter::Rotate(float Value) {
-	AddControllerYawInput(Value);
-}
-
 void AMyFirstCharacter::AddCoin(int Amount) {
 	TotalCoin += Amount;
 }
@@ -116,9 +117,10 @@ void AMyFirstCharacter::Tick(float DeltaTime) {
 // Called to bind functionality to input
 void AMyFirstCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	PlayerInputComponent->BindAxis(TEXT("MoveL_R"), this, &AMyFirstCharacter::MoveRight);
-	PlayerInputComponent->BindAxis(TEXT("MoveF_B"), this, &AMyFirstCharacter::MoveForward);
-	PlayerInputComponent->BindAxis(TEXT("Rotate"), this, &AMyFirstCharacter::Rotate);
+	PlayerInputComponent->BindAxis("MoveL_R", this, &AMyFirstCharacter::MoveRight);
+	PlayerInputComponent->BindAxis("MoveF_B", this, &AMyFirstCharacter::MoveForward);
+	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
+	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AMyFirstCharacter::Jump);
 	PlayerInputComponent->BindAction("Dash", IE_Pressed, this, &AMyFirstCharacter::DashInput);
 }

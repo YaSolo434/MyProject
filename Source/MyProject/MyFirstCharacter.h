@@ -11,6 +11,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Sound/SoundBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameFramework/SpringArmComponent.h"
 
 #include "MyFirstCharacter.generated.h"
 
@@ -39,11 +40,9 @@ public:
 	virtual void TakeXp() override;
 
 private:
-	UPROPERTY(EditAnywhere)
-	UCameraComponent* Camera;
 
-	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* CharacterMesh;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UCameraComponent* Camera;
 
 	UPROPERTY(EditAnywhere, Category = "Player Settings")
 	float MovementSpeed = 800.f;
@@ -64,9 +63,12 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Audio")
 	USoundBase* DashSound;
 
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	class USpringArmComponent* SpringArm;
+
 	void MoveForward(float Value);
 	void MoveRight(float Value);
-	void Rotate(float Value);
 	virtual void Jump() override;
 	virtual void Landed(const FHitResult& Hit) override;
 
