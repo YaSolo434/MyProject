@@ -12,6 +12,10 @@
 #include "Sound/SoundBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
+#include "InputMappingContext.h"
+#include "InputActionValue.h"
 
 #include "MyFirstCharacter.generated.h"
 
@@ -41,8 +45,11 @@ public:
 
 private:
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere)
 	UCameraComponent* Camera;
+
+	UPROPERTY(EditAnywhere)
+	USpringArmComponent* CameraBoom;
 
 	UPROPERTY(EditAnywhere, Category = "Player Settings")
 	float MovementSpeed = 800.f;
@@ -63,12 +70,34 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Audio")
 	USoundBase* DashSound;
 
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* SpringArm;
 
-	void MoveForward(float Value);
-	void MoveRight(float Value);
+	FVector2D CachedMoveInput;
+	FVector2D CachedMoveInputForMesh;
+
+protected:
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UInputMappingContext* DefaultMappingContext;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UInputAction* MoveForwardAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UInputAction* MoveRightAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UInputAction* DashAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UInputAction* JumpAction;
+
+	void MoveForward(const FInputActionValue& Value);
+	void StopMoveForward(const FInputActionValue& Value);
+
+	void MoveRight(const FInputActionValue& Value);
+	void StopMoveRight(const FInputActionValue& Value);
+
 	virtual void Jump() override;
 	virtual void Landed(const FHitResult& Hit) override;
 

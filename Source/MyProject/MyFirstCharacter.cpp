@@ -7,20 +7,15 @@
 AMyFirstCharacter::AMyFirstCharacter() {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	
+	//creates cameraboom
+	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+	CameraBoom->SetupAttachment(GetCapsuleComponent());
 
-	//advanced camera
-	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
-	SpringArm->SetupAttachment(GetCapsuleComponent());
-	SpringArm->TargetArmLength = 400.f;
-	SpringArm->bEnableCameraLag = true;
-	SpringArm->CameraLagSpeed = 10.f;
-	//creating camera
-	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	Camera->SetupAttachment(SpringArm);
+	//creates camera
+	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("PlayerCamera"));
+	Camera->SetupAttachment(CameraBoom);
 	Camera->FieldOfView = 120.f;
-	bUseControllerRotationYaw = false;
-	GetCharacterMovement()->bOrientRotationToMovement = true;
-	GetCharacterMovement()->RotationRate = FRotator(0.f, 720.f, 0.f);
 
 	//set movement stuff
 	GetCharacterMovement()->GravityScale = 2.5f;
@@ -33,12 +28,28 @@ AMyFirstCharacter::AMyFirstCharacter() {
 	DashSound = SoundObj.Object;
 }
 
-void AMyFirstCharacter::MoveForward(float Value) {
-	AddMovementInput(GetActorForwardVector(), Value);
+void AMyFirstCharacter::MoveForward(const FInputActionValue& Value) {
+	CachedMoveInput.X = Value.Get<float>();
+	CachedMoveInputForMesh.X = CachedMoveInput.X;
+
+	AddMovementInput(GetActorForwardVector(), CachedMoveInput.X);
+
+
+}
+void AMyFirstCharacter::StopMoveForward(const FInputActionValue& Value) {
+	CachedMoveInput.X = 0.f;
 }
 
-void AMyFirstCharacter::MoveRight(float Value) {
-	AddMovementInput(GetActorRightVector(), Value);
+void AMyFirstCharacter::MoveRight(const FInputActionValue& Value) {	
+	CachedMoveInput.Y = -Value.Get<float>();
+	CachedMoveInputForMesh.Y = CachedMoveInput.Y;
+
+	AddMovementInput(GetActorRightVector(), CachedMoveInput.Y);
+
+
+}
+void AMyFirstCharacter::StopMoveRight(const FInputActionValue& Value) {
+	CachedMoveInput.Y = 0.f;
 }
 
 void AMyFirstCharacter::Jump() {
@@ -76,15 +87,12 @@ void AMyFirstCharacter::Dash(float ForwardValue, float RightValue) {
 			LaunchCharacter(DashVelocity, true, false);
 		}
 		CanUseDash = false;
-	}
+	}	
 }
 
 
 void AMyFirstCharacter::DashInput() {
-	float ForwardValue = GetInputAxisValue("MOVEF_B");
-	float RightValue = GetInputAxisValue("MOVEL_R");
-
-	Dash(ForwardValue, RightValue);
+	Dash(CachedMoveInput.X, CachedMoveInput.Y);
 }
 
 void AMyFirstCharacter::AddCoin(int Amount) {
@@ -98,7 +106,14 @@ void AMyFirstCharacter::TakeXp() {
 // Called when the game starts or when spawned
 void AMyFirstCharacter::BeginPlay() {
 	Super::BeginPlay();
-	
+
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (PlayerController) {
+		UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
+		if (Subsystem && DefaultMappingContext) {
+			Subsystem->AddMappingContext(DefaultMappingContext, 0);
+		}
+	}
 }
 
 // Called every frame
@@ -112,15 +127,39 @@ void AMyFirstCharacter::Tick(float DeltaTime) {
 			CurTime = 0.f;
 		}
 	}
+
+	if (CachedMoveInput.Y > 0.1f) {
+		GetMesh()->SetRelativeRotation(FRotator(0.f, 0.f, 0.f));
+	}
+	else if (CachedMoveInput.Y < 0.1f) {
+		GetMesh()->SetRelativeRotation(FRotator(0.f, 180.f, 0.f));
+	}
+	if (CachedMoveInput.X > 0.1f) {
+		GetMesh()->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
+	}
+	else if (CachedMoveInput.X < -0.1f) {
+		GetMesh()->SetRelativeRotation(FRotator(0.f, 90.f, 0.f));
+	}
+
+	if (CachedMoveInput == FVector2D::ZeroVector) {
+		GetMesh()->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
+	}
 }
 
 // Called to bind functionality to input
 void AMyFirstCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	PlayerInputComponent->BindAxis("MoveL_R", this, &AMyFirstCharacter::MoveRight);
-	PlayerInputComponent->BindAxis("MoveF_B", this, &AMyFirstCharacter::MoveForward);
-	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
-	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AMyFirstCharacter::Jump);
-	PlayerInputComponent->BindAction("Dash", IE_Pressed, this, &AMyFirstCharacter::DashInput);
+
+	if (UEnhancedInputComponent* Input = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
+		//add input for forward action
+		Input->BindAction(MoveForwardAction, ETriggerEvent::Triggered, this, &AMyFirstCharacter::MoveForward);
+		Input->BindAction(MoveForwardAction, ETriggerEvent::Completed, this, &AMyFirstCharacter::StopMoveForward);
+
+		//add input for right action
+		Input->BindAction(MoveRightAction, ETriggerEvent::Triggered, this, &AMyFirstCharacter::MoveRight);
+		Input->BindAction(MoveRightAction, ETriggerEvent::Completed, this, &AMyFirstCharacter::StopMoveRight);
+
+		Input->BindAction(JumpAction, ETriggerEvent::Started, this, &AMyFirstCharacter::Jump);
+		Input->BindAction(DashAction, ETriggerEvent::Started, this, &AMyFirstCharacter::DashInput);
+	}
 }
