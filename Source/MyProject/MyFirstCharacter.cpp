@@ -18,8 +18,8 @@ AMyFirstCharacter::AMyFirstCharacter() {
 	Camera->FieldOfView = 120.f;
 
 	//set movement stuff
-	GetCharacterMovement()->GravityScale = 2.5f;
-	GetCharacterMovement()->JumpZVelocity = 900.f;
+	GetCharacterMovement()->GravityScale = 2.0f;
+	GetCharacterMovement()->JumpZVelocity = 800.f;
 	GetCharacterMovement()->AirControl = 0.5f;
 	GetCharacterMovement()->MaxWalkSpeed = MovementSpeed;
 
@@ -30,9 +30,9 @@ AMyFirstCharacter::AMyFirstCharacter() {
 
 void AMyFirstCharacter::MoveForward(const FInputActionValue& Value) {
 	CachedMoveInput.X = Value.Get<float>();
-	CachedMoveInputForMesh.X = CachedMoveInput.X;
-
 	AddMovementInput(GetActorForwardVector(), CachedMoveInput.X);
+
+	AMyFirstCharacter::UpdateLastMoveDirection();
 
 
 }
@@ -42,11 +42,9 @@ void AMyFirstCharacter::StopMoveForward(const FInputActionValue& Value) {
 
 void AMyFirstCharacter::MoveRight(const FInputActionValue& Value) {	
 	CachedMoveInput.Y = -Value.Get<float>();
-	CachedMoveInputForMesh.Y = CachedMoveInput.Y;
-
 	AddMovementInput(GetActorRightVector(), CachedMoveInput.Y);
 
-
+	AMyFirstCharacter::UpdateLastMoveDirection();
 }
 void AMyFirstCharacter::StopMoveRight(const FInputActionValue& Value) {
 	CachedMoveInput.Y = 0.f;
@@ -55,6 +53,7 @@ void AMyFirstCharacter::StopMoveRight(const FInputActionValue& Value) {
 void AMyFirstCharacter::Jump() {
 	if (JumpCount < MaxJumpCount) {
 		if (JumpCount == 0) {
+			IsJumping = true;
 			Super::Jump();
 		}
 		else {
@@ -68,6 +67,7 @@ void AMyFirstCharacter::Jump() {
 
 void AMyFirstCharacter::Landed(const FHitResult& Hit) {
 	Super::Landed(Hit);
+	IsJumping = false;
 	JumpCount = 0;
 }
 
@@ -103,6 +103,40 @@ void AMyFirstCharacter::TakeXp() {
 	AddCoin(2);
 }
 
+void AMyFirstCharacter::UpdateLastMoveDirection() {
+	if (!FMath::IsNearlyZero(CachedMoveInput.X) || !FMath::IsNearlyZero(CachedMoveInput.Y)) {
+		LastNonZeroMoveInput = CachedMoveInput;
+	}
+}
+
+void AMyFirstCharacter::UpdateMeshRotation() {
+	if (LastNonZeroMoveInput.Y > 0.1f) {
+		TargetMeshRotation = FRotator(0.f, 0.f, 0.f);
+	}
+	else if (LastNonZeroMoveInput.Y < -0.1f) {
+		TargetMeshRotation = FRotator(0.f, 180.f, 0.f);
+	}
+	else if (LastNonZeroMoveInput.X > 0.1f) {
+		TargetMeshRotation = FRotator(0.f, -90.f, 0.f);
+	}
+	else if (LastNonZeroMoveInput.X < -0.1f) {
+		TargetMeshRotation = FRotator(0.f, 90.f, 0.f);
+	}
+
+	if (LastNonZeroMoveInput.X > 0.1f && LastNonZeroMoveInput.Y > 0.1f) {
+		TargetMeshRotation = FRotator(0.f, -45.f, 0.f);
+	}
+	else if (LastNonZeroMoveInput.X > 0.1f && LastNonZeroMoveInput.Y < -0.1f) {
+		TargetMeshRotation = FRotator(0.f, -135.f, 0.f);
+	}
+	else if (LastNonZeroMoveInput.X < -0.1f && LastNonZeroMoveInput.Y > 0.1f) {
+		TargetMeshRotation = FRotator(0.f, 45.f, 0.f);
+	}
+	else if (LastNonZeroMoveInput.X < -0.1f && LastNonZeroMoveInput.Y < -0.1f) {
+		TargetMeshRotation = FRotator(0.f, 135.f, 0.f);
+	}
+}
+
 // Called when the game starts or when spawned
 void AMyFirstCharacter::BeginPlay() {
 	Super::BeginPlay();
@@ -127,23 +161,11 @@ void AMyFirstCharacter::Tick(float DeltaTime) {
 			CurTime = 0.f;
 		}
 	}
+	AMyFirstCharacter::UpdateMeshRotation();
 
-	if (CachedMoveInput.Y > 0.1f) {
-		GetMesh()->SetRelativeRotation(FRotator(0.f, 0.f, 0.f));
-	}
-	else if (CachedMoveInput.Y < 0.1f) {
-		GetMesh()->SetRelativeRotation(FRotator(0.f, 180.f, 0.f));
-	}
-	if (CachedMoveInput.X > 0.1f) {
-		GetMesh()->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
-	}
-	else if (CachedMoveInput.X < -0.1f) {
-		GetMesh()->SetRelativeRotation(FRotator(0.f, 90.f, 0.f));
-	}
-
-	if (CachedMoveInput == FVector2D::ZeroVector) {
-		GetMesh()->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
-	}
+	FRotator CurrentRotation = GetMesh()->GetRelativeRotation();
+	FRotator NewRotation = FMath::RInterpTo(CurrentRotation, TargetMeshRotation, DeltaTime, MeshRotationSpeed);
+	GetMesh()->SetRelativeRotation(NewRotation);
 }
 
 // Called to bind functionality to input

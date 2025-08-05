@@ -52,11 +52,13 @@ private:
 	USpringArmComponent* CameraBoom;
 
 	UPROPERTY(EditAnywhere, Category = "Player Settings")
-	float MovementSpeed = 800.f;
+	float MovementSpeed = 300.f;
 	float RotationSpeed = 1.0f;
 
 	const int MaxJumpCount = 2;
 	int JumpCount = 0;
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "ture"))
+	bool IsJumping = false;
 
 	int TotalCoin;
 
@@ -74,7 +76,12 @@ private:
 	class USpringArmComponent* SpringArm;
 
 	FVector2D CachedMoveInput;
-	FVector2D CachedMoveInputForMesh;
+	FVector2D LastNonZeroMoveInput;
+	FRotator TargetMeshRotation;
+	float MeshRotationSpeed = 10.f;
+
+	void UpdateLastMoveDirection();
+	void UpdateMeshRotation();
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
