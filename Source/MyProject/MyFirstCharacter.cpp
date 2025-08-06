@@ -105,7 +105,6 @@ void AMyFirstCharacter::Landed(const FHitResult& Hit) {
 }
 
 void AMyFirstCharacter::RestoreWalkSpeed() {
-	UE_LOG(LogTemp, Warning, TEXT("Restoring Walk Speed!"));
 	IsLanding = false;
 	GetCharacterMovement()->MaxWalkSpeed = MovementSpeed;
 }
