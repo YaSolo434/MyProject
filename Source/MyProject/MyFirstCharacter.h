@@ -16,6 +16,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputMappingContext.h"
 #include "InputActionValue.h"
+#include "TimerManager.h"
+#include "Engine/World.h"
 
 #include "MyFirstCharacter.generated.h"
 
@@ -51,9 +53,14 @@ private:
 	UPROPERTY(EditAnywhere)
 	USpringArmComponent* CameraBoom;
 
-	UPROPERTY(EditAnywhere, Category = "Player Settings")
-	float MovementSpeed = 300.f;
+	UPROPERTY(EditAnywhere, Category = "Movement Settings")
+	float MovementSpeed = 330.f;
 	float RotationSpeed = 1.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Movement Settings")
+	float SprintSpeed = 800.f;
+	bool CanSprint = true;
+	float CurSprintTime = 0.f;
 
 	const int MaxJumpCount = 2;
 	int JumpCount = 0;
@@ -76,12 +83,11 @@ private:
 	class USpringArmComponent* SpringArm;
 
 	FVector2D CachedMoveInput;
-	FVector2D LastNonZeroMoveInput;
-	FRotator TargetMeshRotation;
-	float MeshRotationSpeed = 10.f;
 
-	void UpdateLastMoveDirection();
-	void UpdateMeshRotation();
+	FTimerHandle LandSpeedTimerHandle;
+	bool IsLanding = false;
+	UFUNCTION()
+	void RestoreWalkSpeed();
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
@@ -99,15 +105,27 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	UInputAction* JumpAction;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UInputAction* SprintAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UInputAction* LookAction;
+
 	void MoveForward(const FInputActionValue& Value);
 	void StopMoveForward(const FInputActionValue& Value);
 
 	void MoveRight(const FInputActionValue& Value);
 	void StopMoveRight(const FInputActionValue& Value);
 
+	void StartSprint(const FInputActionValue& Value);
+	void StopSprint(const FInputActionValue& Value);
+
 	virtual void Jump() override;
 	virtual void Landed(const FHitResult& Hit) override;
 
 	void Dash(float ForwardValue, float RightValue);
 	void DashInput();
+
+	UFUNCTION()
+	void Look(const FInputActionValue& Value);
 };

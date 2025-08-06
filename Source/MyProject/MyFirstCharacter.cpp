@@ -27,30 +27,55 @@ AMyFirstCharacter::AMyFirstCharacter() {
 	static ConstructorHelpers::FObjectFinder<USoundBase> SoundObj(TEXT("/Game/Sounds/coin.coin"));
 	DashSound = SoundObj.Object;
 }
-
+//MoveForward
 void AMyFirstCharacter::MoveForward(const FInputActionValue& Value) {
-	CachedMoveInput.X = Value.Get<float>();
-	AddMovementInput(GetActorForwardVector(), CachedMoveInput.X);
+	if (!IsLanding) {
+		float AxisValue = Value.Get<float>();
+		if (Controller && AxisValue != 0.f)
+		{
+			const FRotator ControlRotation = Controller->GetControlRotation();
+			const FRotator YawRotation(0.f, ControlRotation.Yaw, 0.f);
 
-	AMyFirstCharacter::UpdateLastMoveDirection();
-
+			const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+			AddMovementInput(Direction, AxisValue);
+		}
+	}
 
 }
 void AMyFirstCharacter::StopMoveForward(const FInputActionValue& Value) {
 	CachedMoveInput.X = 0.f;
 }
-
+//MoveRight
 void AMyFirstCharacter::MoveRight(const FInputActionValue& Value) {	
-	CachedMoveInput.Y = -Value.Get<float>();
-	AddMovementInput(GetActorRightVector(), CachedMoveInput.Y);
+	if (!IsLanding) {
+		float AxisValue = Value.Get<float>();
+		if (Controller && AxisValue != 0.f) {
+			const FRotator CameraRotation = Controller->GetControlRotation();
+			const FRotator YawCameraRotation = FRotator(0.f, CameraRotation.Yaw, 0.f);
+			
+			FVector CameraRotationVector = FRotationMatrix(YawCameraRotation).GetUnitAxis(EAxis::Y);
 
-	AMyFirstCharacter::UpdateLastMoveDirection();
+			AddMovementInput(-CameraRotationVector, AxisValue);
+		}
+		
+	}
 }
 void AMyFirstCharacter::StopMoveRight(const FInputActionValue& Value) {
 	CachedMoveInput.Y = 0.f;
 }
 
+void AMyFirstCharacter::StartSprint(const FInputActionValue& Value) {
+	if (!IsLanding) {
+		GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
+	}
+}
+
+void AMyFirstCharacter::StopSprint(const FInputActionValue& Value) {
+	GetCharacterMovement()->MaxWalkSpeed = MovementSpeed;
+}
+
 void AMyFirstCharacter::Jump() {
+
 	if (JumpCount < MaxJumpCount) {
 		if (JumpCount == 0) {
 			IsJumping = true;
@@ -64,29 +89,45 @@ void AMyFirstCharacter::Jump() {
 	}
 }
 
-
 void AMyFirstCharacter::Landed(const FHitResult& Hit) {
 	Super::Landed(Hit);
 	IsJumping = false;
 	JumpCount = 0;
+
+	IsLanding = true;
+	GetWorldTimerManager().SetTimer(
+		LandSpeedTimerHandle,
+		this,
+		&AMyFirstCharacter::RestoreWalkSpeed,
+		1.2f,
+		false
+	);
+}
+
+void AMyFirstCharacter::RestoreWalkSpeed() {
+	UE_LOG(LogTemp, Warning, TEXT("Restoring Walk Speed!"));
+	IsLanding = false;
+	GetCharacterMovement()->MaxWalkSpeed = MovementSpeed;
 }
 
 void AMyFirstCharacter::Dash(float ForwardValue, float RightValue) {
 	if (CanUseDash) {
+		if (!IsLanding) {
 		FVector Forward = GetActorForwardVector();
 		FVector Right = GetActorRightVector();
 
-		FVector DashDirection = (Forward * ForwardValue) + (Right * RightValue);		
-		if (!DashDirection.IsNearlyZero()) {
-			DashDirection.Normalize();
-			FVector DashVelocity = DashDirection * DashSpeed;
-			LaunchCharacter(DashVelocity, true, false);
+		FVector DashDirection = (Forward * ForwardValue) + (Right * RightValue);
+			if (!DashDirection.IsNearlyZero()) {
+				DashDirection.Normalize();
+				FVector DashVelocity = DashDirection * DashSpeed;
+				LaunchCharacter(DashVelocity, true, false);
+			}
+			else {
+				FVector DashVelocity = GetActorForwardVector() * DashSpeed;
+				LaunchCharacter(DashVelocity, true, false);
+			}
+			CanUseDash = false;
 		}
-		else {
-			FVector DashVelocity = GetActorForwardVector() * DashSpeed;
-			LaunchCharacter(DashVelocity, true, false);
-		}
-		CanUseDash = false;
 	}	
 }
 
@@ -103,38 +144,14 @@ void AMyFirstCharacter::TakeXp() {
 	AddCoin(2);
 }
 
-void AMyFirstCharacter::UpdateLastMoveDirection() {
-	if (!FMath::IsNearlyZero(CachedMoveInput.X) || !FMath::IsNearlyZero(CachedMoveInput.Y)) {
-		LastNonZeroMoveInput = CachedMoveInput;
-	}
-}
 
-void AMyFirstCharacter::UpdateMeshRotation() {
-	if (LastNonZeroMoveInput.Y > 0.1f) {
-		TargetMeshRotation = FRotator(0.f, 0.f, 0.f);
-	}
-	else if (LastNonZeroMoveInput.Y < -0.1f) {
-		TargetMeshRotation = FRotator(0.f, 180.f, 0.f);
-	}
-	else if (LastNonZeroMoveInput.X > 0.1f) {
-		TargetMeshRotation = FRotator(0.f, -90.f, 0.f);
-	}
-	else if (LastNonZeroMoveInput.X < -0.1f) {
-		TargetMeshRotation = FRotator(0.f, 90.f, 0.f);
-	}
 
-	if (LastNonZeroMoveInput.X > 0.1f && LastNonZeroMoveInput.Y > 0.1f) {
-		TargetMeshRotation = FRotator(0.f, -45.f, 0.f);
-	}
-	else if (LastNonZeroMoveInput.X > 0.1f && LastNonZeroMoveInput.Y < -0.1f) {
-		TargetMeshRotation = FRotator(0.f, -135.f, 0.f);
-	}
-	else if (LastNonZeroMoveInput.X < -0.1f && LastNonZeroMoveInput.Y > 0.1f) {
-		TargetMeshRotation = FRotator(0.f, 45.f, 0.f);
-	}
-	else if (LastNonZeroMoveInput.X < -0.1f && LastNonZeroMoveInput.Y < -0.1f) {
-		TargetMeshRotation = FRotator(0.f, 135.f, 0.f);
-	}
+void AMyFirstCharacter::Look(const FInputActionValue& Value)
+{
+	FVector2D LookInput = Value.Get<FVector2D>();
+
+	AddControllerYawInput(LookInput.X);
+	AddControllerPitchInput(LookInput.Y);
 }
 
 // Called when the game starts or when spawned
@@ -161,11 +178,12 @@ void AMyFirstCharacter::Tick(float DeltaTime) {
 			CurTime = 0.f;
 		}
 	}
-	AMyFirstCharacter::UpdateMeshRotation();
+	FVector Velocity = GetVelocity();
+	FVector HorizontalVelocity = FVector(Velocity.X, Velocity.Y, 0.f);
 
-	FRotator CurrentRotation = GetMesh()->GetRelativeRotation();
-	FRotator NewRotation = FMath::RInterpTo(CurrentRotation, TargetMeshRotation, DeltaTime, MeshRotationSpeed);
-	GetMesh()->SetRelativeRotation(NewRotation);
+	bool bIsMoving = HorizontalVelocity.SizeSquared() > KINDA_SMALL_NUMBER;
+
+	GetCharacterMovement()->bOrientRotationToMovement = bIsMoving;
 }
 
 // Called to bind functionality to input
@@ -183,5 +201,10 @@ void AMyFirstCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 		Input->BindAction(JumpAction, ETriggerEvent::Started, this, &AMyFirstCharacter::Jump);
 		Input->BindAction(DashAction, ETriggerEvent::Started, this, &AMyFirstCharacter::DashInput);
+
+		Input->BindAction(SprintAction, ETriggerEvent::Triggered, this, &AMyFirstCharacter::StartSprint);
+		Input->BindAction(SprintAction, ETriggerEvent::Completed, this, &AMyFirstCharacter::StopSprint);
+
+		Input->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMyFirstCharacter::Look);
 	}
 }
