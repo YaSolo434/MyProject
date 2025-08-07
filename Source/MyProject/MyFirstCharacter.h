@@ -18,6 +18,7 @@
 #include "InputActionValue.h"
 #include "TimerManager.h"
 #include "Engine/World.h"
+#include "Sword.h"
 
 #include "MyFirstCharacter.generated.h"
 
@@ -128,4 +129,10 @@ protected:
 
 	UFUNCTION()
 	void Look(const FInputActionValue& Value);
+
+	UPROPERTY(EditAnywhere, Category = "Weapon")
+	TSubclassOf<class ASword> SwordClass;
+
+	UPROPERTY()
+	ASword* EquippedSword;
 };

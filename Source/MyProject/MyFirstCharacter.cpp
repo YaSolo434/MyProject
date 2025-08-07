@@ -165,6 +165,29 @@ void AMyFirstCharacter::BeginPlay() {
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+	if (SwordClass)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = GetInstigator();
+
+		EquippedSword = GetWorld()->SpawnActor<ASword>(SwordClass, SpawnParams);
+		if (EquippedSword)
+		{
+			// Attach to mesh socket
+			EquippedSword->AttachToComponent(
+				GetMesh(),
+				FAttachmentTransformRules::SnapToTargetNotIncludingScale,
+				FName("R_HandSocket")
+			);
+		}
+		else {
+			UE_LOG(LogTemp, Warning, TEXT("Sword hasnt spawned1"));
+		}
+	}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("Sword hasnt spawned"));
+	}
 }
 
 // Called every frame
