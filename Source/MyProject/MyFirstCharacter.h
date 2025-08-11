@@ -112,6 +112,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	UInputAction* LookAction;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UInputAction* AttackAction;
+
 	void MoveForward(const FInputActionValue& Value);
 	void StopMoveForward(const FInputActionValue& Value);
 
@@ -126,6 +129,8 @@ protected:
 
 	void Dash(float ForwardValue, float RightValue);
 	void DashInput();
+
+	void Attack(const FInputActionValue& Value);
 
 	UFUNCTION()
 	void Look(const FInputActionValue& Value);

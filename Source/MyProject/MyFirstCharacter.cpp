@@ -143,14 +143,16 @@ void AMyFirstCharacter::TakeXp() {
 	AddCoin(2);
 }
 
-
-
 void AMyFirstCharacter::Look(const FInputActionValue& Value)
 {
 	FVector2D LookInput = Value.Get<FVector2D>();
 
 	AddControllerYawInput(LookInput.X);
 	AddControllerPitchInput(LookInput.Y);
+}
+
+void AMyFirstCharacter::Attack(const FInputActionValue& Value) {
+
 }
 
 // Called when the game starts or when spawned
@@ -228,5 +230,7 @@ void AMyFirstCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 		Input->BindAction(SprintAction, ETriggerEvent::Completed, this, &AMyFirstCharacter::StopSprint);
 
 		Input->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMyFirstCharacter::Look);
+
+		Input->BindAction(AttackAction, ETriggerEvent::Started, this, &AMyFirstCharacter::Attack);
 	}
 }
