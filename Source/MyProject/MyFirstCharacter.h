@@ -19,6 +19,7 @@
 #include "TimerManager.h"
 #include "Engine/World.h"
 #include "Sword.h"
+#include "HealthComponent.h"
 
 #include "MyFirstCharacter.generated.h"
 
@@ -45,6 +46,12 @@ public:
 	void AddCoin(int Amount);
 
 	virtual void TakeXp() override;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool IsAttacking;
+
+	UFUNCTION(BlueprintCallable)
+	void LineTrace();
 
 private:
 
@@ -140,4 +147,9 @@ protected:
 
 	UPROPERTY()
 	ASword* EquippedSword;
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	class UAnimMontage* AttackMontage;
+	UPROPERTY(EditAnywhere)
+	int Damage;
+
 };

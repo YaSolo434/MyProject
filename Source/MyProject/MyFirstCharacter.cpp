@@ -75,18 +75,20 @@ void AMyFirstCharacter::StopSprint(const FInputActionValue& Value) {
 }
 
 void AMyFirstCharacter::Jump() {
-
-	if (JumpCount < MaxJumpCount) {
-		if (JumpCount == 0) {
-			IsJumping = true;
-			Super::Jump();
+	if (!IsLanding) {
+		if (JumpCount < MaxJumpCount) {
+			if (JumpCount == 0) {
+				IsJumping = true;
+				Super::Jump();
+			}
+			else {
+				FVector JumpVelocity = FVector(0.f, 0.f, GetCharacterMovement()->JumpZVelocity);
+				LaunchCharacter(JumpVelocity, false, true);
+			}
+			JumpCount++;
 		}
-		else {
-			FVector JumpVelocity = FVector(0.f, 0.f, GetCharacterMovement()->JumpZVelocity);
-			LaunchCharacter(JumpVelocity, false, true);
-		}
-		JumpCount++;
 	}
+
 }
 
 void AMyFirstCharacter::Landed(const FHitResult& Hit) {
@@ -152,7 +154,54 @@ void AMyFirstCharacter::Look(const FInputActionValue& Value)
 }
 
 void AMyFirstCharacter::Attack(const FInputActionValue& Value) {
+	if (AttackMontage) {
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		if (AnimInstance && !IsAttacking) {
+			AnimInstance->Montage_Play(AttackMontage);
+			IsAttacking = true;
+			IsLanding = true;
+			GetWorldTimerManager().SetTimer(
+				LandSpeedTimerHandle,
+				this,
+				&AMyFirstCharacter::RestoreWalkSpeed,
+				1.4f,
+				false
+			);
+		}
+	}
+}
 
+void AMyFirstCharacter::LineTrace() {
+	//Get SwordMesh
+	UStaticMeshComponent* SwordMesh = EquippedSword->SwordStaticMesh;
+
+	//Get socket locations
+	FVector StartLocation = SwordMesh->GetSocketLocation(FName("Start"));
+	FVector EndLocation = SwordMesh->GetSocketLocation(FName("End"));
+	
+	//Setup linetrace
+	FHitResult HitResult;
+	FCollisionQueryParams TraceParams;
+	TraceParams.AddIgnoredActor(this);
+
+	//Linetrace
+	GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility, TraceParams);
+	DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 1.0f, 0, 2.0f);
+
+	//Get HitActor that gets hit by sword
+	if (HitResult.bBlockingHit) {
+		UE_LOG(LogTemp, Warning, TEXT("Hit actor: %s"), *HitResult.GetActor()->GetName());
+		AActor* ActorHit = HitResult.GetActor();
+		UHealthComponent* EnemyHit = ActorHit->FindComponentByClass<UHealthComponent>();
+
+		if (EnemyHit) {
+			UE_LOG(LogTemp, Warning, TEXT("Health component found! Applying damage."));
+			EnemyHit->TakeDamage(Damage);
+		}
+		else {
+			UE_LOG(LogTemp, Warning, TEXT("No health component found on hit actor."));
+		}
+	}
 }
 
 // Called when the game starts or when spawned
@@ -182,12 +231,6 @@ void AMyFirstCharacter::BeginPlay() {
 				FName("R_HandSocket")
 			);
 		}
-		else {
-			UE_LOG(LogTemp, Warning, TEXT("Sword hasnt spawned1"));
-		}
-	}
-	else {
-		UE_LOG(LogTemp, Warning, TEXT("Sword hasnt spawned"));
 	}
 }
 

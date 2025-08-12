@@ -10,11 +10,11 @@ ASword::ASword()
 	PrimaryActorTick.bCanEverTick = true;
 
 	SwordStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SwordStaticMesh"));
+	RootComponent = SwordStaticMesh;
 	SwordHitbox = CreateDefaultSubobject<UBoxComponent>(TEXT("SwordHitbox"));
 	SwordHitbox->SetupAttachment(SwordStaticMesh);
 
 }
-
 // Called when the game starts or when spawned
 void ASword::BeginPlay()
 {
