@@ -8,6 +8,10 @@
 
 #include "HealthComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeathSignature);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDamagedSignature);
+
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class MYPROJECT_API UHealthComponent : public UActorComponent
@@ -34,9 +38,12 @@ protected:
 
 	void AllowTakeDamage();
 
-	void Die();
-
 public:
 	void TakeDamage(int Damage);
 
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnDeathSignature OnDeath;
+
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnDamagedSignature OnDamaged;
 };

@@ -14,14 +14,11 @@ UHealthComponent::UHealthComponent()
 	CanTakeDamage = true;
 }
 
-
-void UHealthComponent::Die() {
-	GetOwner()->Destroy();
-}
-
 void UHealthComponent::TakeDamage(int Damage) {
 	if (CanTakeDamage) {
 		Health -= Damage;
+		OnDamaged.Broadcast();
+
 		CanTakeDamage = false;
 
 		//delay
@@ -30,7 +27,7 @@ void UHealthComponent::TakeDamage(int Damage) {
 
 		//Die Func
 		if (Health <= 0) {
-			Die();
+			OnDeath.Broadcast();
 		}
 	}
 }

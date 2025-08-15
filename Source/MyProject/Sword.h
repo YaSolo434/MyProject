@@ -31,6 +31,4 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UBoxComponent* SwordHitbox;
-
-
 };

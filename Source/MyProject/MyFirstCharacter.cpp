@@ -65,13 +65,39 @@ void AMyFirstCharacter::StopMoveRight(const FInputActionValue& Value) {
 }
 
 void AMyFirstCharacter::StartSprint(const FInputActionValue& Value) {
-	if (!IsLanding) {
+	if (!IsLanding && CanSprint) {
+		IsSprinting = true;
 		GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
+
 	}
 }
 
 void AMyFirstCharacter::StopSprint(const FInputActionValue& Value) {
+	IsSprinting = false;
 	GetCharacterMovement()->MaxWalkSpeed = MovementSpeed;
+}
+
+void AMyFirstCharacter::SprintAdj(float DeltaTime) {
+	if (IsSprinting && CanSprint) {
+		CurSprintTime -= DeltaTime;
+		RegenTimer = 0.f;
+		if (CurSprintTime <= 0.f) {
+			CurSprintTime = 0.f;
+			CanSprint = false;
+			GetCharacterMovement()->MaxWalkSpeed = MovementSpeed;
+		}
+	}
+	else {
+		RegenTimer += DeltaTime;
+		if (RegenTimer >= DelayRegenTime) {
+			CurSprintTime += DeltaTime;
+			if (CurSprintTime >= MaxSprintTime) {
+				CurSprintTime = MaxSprintTime;
+				RegenTimer = 0.f;
+				CanSprint = true;
+			}
+		}
+	}
 }
 
 void AMyFirstCharacter::Jump() {
@@ -153,6 +179,26 @@ void AMyFirstCharacter::Look(const FInputActionValue& Value)
 	AddControllerPitchInput(LookInput.Y);
 }
 
+void AMyFirstCharacter::SpawnSword() {
+	if (SwordClass)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = GetInstigator();
+
+		EquippedSword = GetWorld()->SpawnActor<ASword>(SwordClass, SpawnParams);
+		if (EquippedSword)
+		{
+			// Attach to mesh socket
+			EquippedSword->AttachToComponent(
+				GetMesh(),
+				FAttachmentTransformRules::SnapToTargetNotIncludingScale,
+				FName("R_HandSocket")
+			);
+		}
+	}
+}
+
 void AMyFirstCharacter::Attack(const FInputActionValue& Value) {
 	if (AttackMontage) {
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
@@ -186,7 +232,7 @@ void AMyFirstCharacter::LineTrace() {
 
 	//Linetrace
 	GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility, TraceParams);
-	DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 1.0f, 0, 2.0f);
+	//DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 1.0f, 0, 2.0f);
 
 	//Get HitActor that gets hit by sword
 	if (HitResult.bBlockingHit) {
@@ -204,6 +250,7 @@ void AMyFirstCharacter::LineTrace() {
 	}
 }
 
+
 // Called when the game starts or when spawned
 void AMyFirstCharacter::BeginPlay() {
 	Super::BeginPlay();
@@ -215,23 +262,8 @@ void AMyFirstCharacter::BeginPlay() {
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
-	if (SwordClass)
-	{
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.Owner = this;
-		SpawnParams.Instigator = GetInstigator();
 
-		EquippedSword = GetWorld()->SpawnActor<ASword>(SwordClass, SpawnParams);
-		if (EquippedSword)
-		{
-			// Attach to mesh socket
-			EquippedSword->AttachToComponent(
-				GetMesh(),
-				FAttachmentTransformRules::SnapToTargetNotIncludingScale,
-				FName("R_HandSocket")
-			);
-		}
-	}
+	SpawnSword();
 }
 
 // Called every frame
@@ -251,6 +283,8 @@ void AMyFirstCharacter::Tick(float DeltaTime) {
 	bool bIsMoving = HorizontalVelocity.SizeSquared() > KINDA_SMALL_NUMBER;
 
 	GetCharacterMovement()->bOrientRotationToMovement = bIsMoving;
+
+	SprintAdj(DeltaTime);
 }
 
 // Called to bind functionality to input

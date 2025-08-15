@@ -67,8 +67,16 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Movement Settings")
 	float SprintSpeed = 800.f;
+
 	bool CanSprint = true;
-	float CurSprintTime = 0.f;
+	bool IsSprinting = false;
+
+	float CurSprintTime = MaxSprintTime;
+	float MaxSprintTime = 5.f;
+	float RegenTimer = 0.f;
+	float DelayRegenTime = 1.f;
+
+	void SprintAdj(float DeltaTime);
 
 	const int MaxJumpCount = 2;
 	int JumpCount = 0;
@@ -147,6 +155,8 @@ protected:
 
 	UPROPERTY()
 	ASword* EquippedSword;
+
+	void SpawnSword();
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	class UAnimMontage* AttackMontage;
 	UPROPERTY(EditAnywhere)
