@@ -10,6 +10,9 @@ AEnemy::AEnemy()
 	PrimaryActorTick.bCanEverTick = true;
 
 	HealthComp = CreateDefaultSubobject<UHealthComponent>(TEXT("Health"));
+
+	SwordMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Sword"));
+	SwordMesh->SetupAttachment(GetMesh(), FName("R_HandSocket"));
 }
 
 // Called when the game starts or when spawned

@@ -10,6 +10,7 @@
 #include "Animation/AnimationAsset.h"
 #include "Animation/AnimInstance.h"
 #include "Animation/AnimMontage.h"
+#include "Sword.h"
 
 #include "Enemy.generated.h"
 
@@ -34,6 +35,10 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 protected:
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* SwordMesh;
+
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UHealthComponent* HealthComp;
 
@@ -42,7 +47,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 	UAnimMontage* HitReactMontage;
-
 
 	bool AlreadyDied = false;
 
