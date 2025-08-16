@@ -38,7 +38,6 @@ protected:
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* SwordMesh;
 
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UHealthComponent* HealthComp;
 

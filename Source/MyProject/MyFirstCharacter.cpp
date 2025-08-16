@@ -232,7 +232,7 @@ void AMyFirstCharacter::LineTrace() {
 
 	//Linetrace
 	GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility, TraceParams);
-	//DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 1.0f, 0, 2.0f);
+	DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 1.0f, 0, 2.0f);
 
 	//Get HitActor that gets hit by sword
 	if (HitResult.bBlockingHit) {
