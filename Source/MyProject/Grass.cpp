@@ -22,7 +22,6 @@ AGrass::AGrass()
 void AGrass::GettinDamage() {
 	Scale -= ScaleChange;
 	GrassMesh->SetRelativeScale3D(FVector(1.f, 1.f, Scale));
-
 }
 
 void AGrass::Kill() {

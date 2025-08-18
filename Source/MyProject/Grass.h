@@ -8,6 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/BoxComponent.h"
 #include "HealthComponent.h"
+#include "MyFirstCharacter.h"
 
 #include "Grass.generated.h"
 

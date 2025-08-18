@@ -4,24 +4,24 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "Camera/CameraComponent.h"
-#include "Components/StaticMeshComponent.h"
 #include "TakingXp.h"
-#include "Components/CapsuleComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
-#include "Sound/SoundBase.h"
-#include "Kismet/GameplayStatics.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "EnhancedInputComponent.h"
-#include "EnhancedInputSubsystems.h"
-#include "InputMappingContext.h"
-#include "InputActionValue.h"
-#include "TimerManager.h"
-#include "Engine/World.h"
-#include "Sword.h"
-#include "HealthComponent.h"
 
 #include "MyFirstCharacter.generated.h"
+
+// Forward declarations (only need pointers/references here)
+class UCameraComponent;
+class USpringArmComponent;
+class UStaticMeshComponent;
+class UCapsuleComponent;
+class UCharacterMovementComponent;
+class USoundBase;
+class UInputMappingContext;
+class UInputAction;
+class UAudioComponent;
+
+class ASword;
+class UHealthComponent;
+class ATakingXp;
 
 UCLASS()
 class MYPROJECT_API AMyFirstCharacter : public ACharacter, public ITakingXp
@@ -62,7 +62,7 @@ private:
 	USpringArmComponent* CameraBoom;
 
 	UPROPERTY(EditAnywhere, Category = "Movement Settings")
-	float MovementSpeed = 330.f;
+	float MovementSpeed = 300.f;
 	float RotationSpeed = 1.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Movement Settings")
@@ -161,5 +161,17 @@ protected:
 	class UAnimMontage* AttackMontage;
 	UPROPERTY(EditAnywhere)
 	int Damage;
+
+	UPROPERTY(EditAnywhere, Category = "Combat|SFX")
+	USoundBase* SwordHitSound;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool HasPlayedHitSound = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Audio")
+	TArray<USoundBase*> WalkingSounds;
+
+	UFUNCTION(BlueprintCallable, Category = "Audio")
+	USoundBase* GetRandomWalkingSound() const;
 
 };

@@ -2,6 +2,23 @@
 
 
 #include "MyFirstCharacter.h"
+#include "Camera/CameraComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Components/AudioComponent.h"
+#include "Components/StaticMeshComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundBase.h"
+#include "Sword.h"
+#include "HealthComponent.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
+#include "InputMappingContext.h"
+#include "InputAction.h"
+#include "TimerManager.h"
+#include "Engine/World.h"
+#include "Grass.h"
 
 // Sets default values
 AMyFirstCharacter::AMyFirstCharacter() {
@@ -199,6 +216,15 @@ void AMyFirstCharacter::SpawnSword() {
 	}
 }
 
+USoundBase* AMyFirstCharacter::GetRandomWalkingSound() const {
+	if (WalkingSounds.Num() > 0) {
+		int32 Index = FMath::RandRange(0, WalkingSounds.Num() - 1);
+		
+		return WalkingSounds[Index];
+	}
+	return nullptr;
+}
+
 void AMyFirstCharacter::Attack(const FInputActionValue& Value) {
 	if (AttackMontage) {
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
@@ -243,6 +269,14 @@ void AMyFirstCharacter::LineTrace() {
 		if (EnemyHit) {
 			UE_LOG(LogTemp, Warning, TEXT("Health component found! Applying damage."));
 			EnemyHit->TakeDamage(Damage);
+
+			if (ActorHit->IsA(AGrass::StaticClass())) {
+				if (SwordHitSound && !HasPlayedHitSound) {
+					UGameplayStatics::PlaySoundAtLocation(ActorHit, SwordHitSound, HitResult.Location);
+
+					HasPlayedHitSound = true;
+				}
+			}
 		}
 		else {
 			UE_LOG(LogTemp, Warning, TEXT("No health component found on hit actor."));
