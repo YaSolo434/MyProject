@@ -18,6 +18,8 @@ class USoundBase;
 class UInputMappingContext;
 class UInputAction;
 class UAudioComponent;
+class USphereComponent;
+class UWidgetComponent;
 
 class ASword;
 class UHealthComponent;
@@ -55,10 +57,10 @@ public:
 
 private:
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Camera")
 	UCameraComponent* Camera;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Camera")
 	USpringArmComponent* CameraBoom;
 
 	UPROPERTY(EditAnywhere, Category = "Movement Settings")
@@ -173,5 +175,14 @@ protected:
 
 	UFUNCTION(BlueprintCallable, Category = "Audio")
 	USoundBase* GetRandomWalkingSound() const;
+
+	UPROPERTY(EditAnywhere, Category = "UI")
+	TSubclassOf<class UHealthBar> StaminaBarWidgetClass;
+
+	UPROPERTY()
+	UHealthBar* StaminaBarWidget;
+
+	UFUNCTION()
+	void UpdateStaminaBar();
 
 };

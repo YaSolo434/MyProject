@@ -7,6 +7,7 @@
 #include "Components/AudioComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/SphereComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundBase.h"
@@ -19,6 +20,8 @@
 #include "TimerManager.h"
 #include "Engine/World.h"
 #include "Grass.h"
+#include "Components/WidgetComponent.h"
+#include "HealthBar.h"
 
 // Sets default values
 AMyFirstCharacter::AMyFirstCharacter() {
@@ -39,10 +42,6 @@ AMyFirstCharacter::AMyFirstCharacter() {
 	GetCharacterMovement()->JumpZVelocity = 800.f;
 	GetCharacterMovement()->AirControl = 0.5f;
 	GetCharacterMovement()->MaxWalkSpeed = MovementSpeed;
-
-	//adding dash sound
-	static ConstructorHelpers::FObjectFinder<USoundBase> SoundObj(TEXT("/Game/Sounds/coin.coin"));
-	DashSound = SoundObj.Object;
 }
 //MoveForward
 void AMyFirstCharacter::MoveForward(const FInputActionValue& Value) {
@@ -103,6 +102,7 @@ void AMyFirstCharacter::SprintAdj(float DeltaTime) {
 			CanSprint = false;
 			GetCharacterMovement()->MaxWalkSpeed = MovementSpeed;
 		}
+		UpdateStaminaBar();
 	}
 	else {
 		RegenTimer += DeltaTime;
@@ -114,6 +114,7 @@ void AMyFirstCharacter::SprintAdj(float DeltaTime) {
 				CanSprint = true;
 			}
 		}
+		UpdateStaminaBar();
 	}
 }
 
@@ -225,6 +226,12 @@ USoundBase* AMyFirstCharacter::GetRandomWalkingSound() const {
 	return nullptr;
 }
 
+void AMyFirstCharacter::UpdateStaminaBar() {
+	if (StaminaBarWidget) {
+		StaminaBarWidget->SetProgressPrecent(CurSprintTime / MaxSprintTime);
+	}
+}
+
 void AMyFirstCharacter::Attack(const FInputActionValue& Value) {
 	if (AttackMontage) {
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
@@ -298,6 +305,13 @@ void AMyFirstCharacter::BeginPlay() {
 	}
 
 	SpawnSword();
+
+	if (StaminaBarWidgetClass) {
+		StaminaBarWidget = CreateWidget<UHealthBar>(GetWorld(), StaminaBarWidgetClass);
+		if (StaminaBarWidget) {
+			StaminaBarWidget->AddToViewport();
+		}
+	}
 }
 
 // Called every frame
@@ -319,6 +333,13 @@ void AMyFirstCharacter::Tick(float DeltaTime) {
 	GetCharacterMovement()->bOrientRotationToMovement = bIsMoving;
 
 	SprintAdj(DeltaTime);
+
+	if (FVector::Dist(Camera->GetComponentLocation(), GetMesh()->GetComponentLocation()) < 50.f) {
+		GetMesh()->SetVisibility(false, true);
+	}
+	else {
+		GetMesh()->SetVisibility(true, true);
+	}
 }
 
 // Called to bind functionality to input

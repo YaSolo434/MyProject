@@ -17,10 +17,9 @@ class MYPROJECT_API UHealthBar : public UUserWidget
 	
 public:
 	UFUNCTION(BlueprintCallable)
-	void SetHealthPrecent(float Precent);
+	void SetProgressPrecent(float Precent);
 
 protected:
 	UPROPERTY(meta = (BindWidget))
-	UProgressBar* HealthBar;
-
+	UProgressBar* ProgressBar;
 };

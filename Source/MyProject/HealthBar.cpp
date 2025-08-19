@@ -3,9 +3,9 @@
 
 #include "HealthBar.h"
 
-void UHealthBar::SetHealthPrecent(float Precent) {
+void UHealthBar::SetProgressPrecent(float Precent) {
 
-	if (HealthBar) {
-		HealthBar->SetPercent(FMath::Clamp(Precent, 0.f, 1.f));
+	if (ProgressBar) {
+		ProgressBar->SetPercent(FMath::Clamp(Precent, 0.f, 1.f));
 	}
 }
