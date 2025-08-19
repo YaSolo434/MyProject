@@ -1,5 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "HealthBar.h"
+#include "Components/WidgetComponent.h"
 
 #include "Enemy.h"
 
@@ -10,6 +12,12 @@ AEnemy::AEnemy()
 	PrimaryActorTick.bCanEverTick = true;
 
 	HealthComp = CreateDefaultSubobject<UHealthComponent>(TEXT("Health"));
+	HealthBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBarWidget"));
+	HealthBarWidget->SetupAttachment(RootComponent);
+	HealthBarWidget->SetWidgetSpace(EWidgetSpace::World);
+	HealthBarWidget->SetDrawSize(FVector2D(100.f, 10.f));
+	HealthBarWidget->SetRelativeLocation(FVector(0.f, 0.f, 120.f));
+
 
 	SwordMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Sword"));
 	SwordMesh->SetupAttachment(GetMesh(), FName("R_HandSocket"));
@@ -22,6 +30,7 @@ void AEnemy::BeginPlay()
 	
 	HealthComp->OnDeath.AddDynamic(this, &AEnemy::Die);
 	HealthComp->OnDamaged.AddDynamic(this, &AEnemy::HitAnimation);
+	HealthComp->OnHealthChanged.AddDynamic(this, &AEnemy::UpdateHealthBar);
 }
 
 void AEnemy::Die() {
@@ -41,6 +50,14 @@ void AEnemy::HitAnimation() {
 
 	//playing anim
 	AnimInstance->Montage_Play(HitReactMontage);
+}
+
+void AEnemy::UpdateHealthBar(float CurrentHealth, float MaxHealth) {
+	if (UUserWidget* Widget = HealthBarWidget->GetUserWidgetObject()) {
+		if (UHealthBar* HealthBar = Cast<UHealthBar>(Widget)) {
+			HealthBar->SetHealthPrecent(CurrentHealth / MaxHealth);
+		}
+	}
 }
 
 // Called every frame

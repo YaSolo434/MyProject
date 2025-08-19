@@ -14,6 +14,8 @@
 
 #include "Enemy.generated.h"
 
+class UWidgetComponent;
+
 UCLASS()
 class MYPROJECT_API AEnemy : public ACharacter
 {
@@ -54,4 +56,10 @@ protected:
 
 	UFUNCTION()
 	void HitAnimation();
+
+	UFUNCTION()
+	void UpdateHealthBar(float CurrentHealth, float MaxHealth);
+
+	UPROPERTY(EditAnywhere)
+	UWidgetComponent* HealthBarWidget;
 };
