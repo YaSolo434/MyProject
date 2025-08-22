@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "TakingXp.h"
+#include "InteractionInterface.h"
+
 
 #include "MyFirstCharacter.generated.h"
 
@@ -24,6 +26,23 @@ class UWidgetComponent;
 class ASword;
 class UHealthComponent;
 class ATakingXp;
+
+USTRUCT()
+struct FInteractionData
+{
+	GENERATED_USTRUCT_BODY()
+
+	FInteractionData() : CurrentInteractable(nullptr), LastInteractionCheckTime(0.f)
+	{
+	};
+
+	UPROPERTY()
+	AActor* CurrentInteractable;
+
+	UPROPERTY()
+	float LastInteractionCheckTime;
+};
+
 
 UCLASS()
 class MYPROJECT_API AMyFirstCharacter : public ACharacter, public ITakingXp
@@ -94,6 +113,8 @@ private:
 	float BreakTime = 5.0f;
 	float CurTime = 0.f;
 
+	void DashCooldown(float DeltaTime);
+
 	UPROPERTY(EditAnywhere, Category = "Audio")
 	USoundBase* DashSound;
 
@@ -131,6 +152,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	UInputAction* AttackAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UInputAction* InteractAction;
 
 	void MoveForward(const FInputActionValue& Value);
 	void StopMoveForward(const FInputActionValue& Value);
@@ -184,5 +208,28 @@ protected:
 
 	UFUNCTION()
 	void UpdateStaminaBar();
+
+
+
+
+	UPROPERTY(VisibleAnywhere, Category = "Interaction")
+	TScriptInterface<IInteractionInterface> TargetInteractable;
+
+	float InteractionCheckFrequency;
+
+	float InteractionCheckDistance;
+
+	FTimerHandle TimerHandle_Interaction;
+
+	FInteractionData InteractionData;
+
+	void PerformInteractionCheck();
+	void FoundInteractable(AActor* NewInteractable);
+	void NoInteractableFound();
+	void BeginInteract();
+	void EndInteract();
+	void Interact();
+
+	FORCEINLINE bool IsInteracting() const { return GetWorldTimerManager().IsTimerActive(TimerHandle_Interaction); };
 
 };

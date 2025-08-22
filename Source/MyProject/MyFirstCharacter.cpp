@@ -42,6 +42,12 @@ AMyFirstCharacter::AMyFirstCharacter() {
 	GetCharacterMovement()->JumpZVelocity = 800.f;
 	GetCharacterMovement()->AirControl = 0.5f;
 	GetCharacterMovement()->MaxWalkSpeed = MovementSpeed;
+
+	//set interaction trace vars
+	InteractionCheckFrequency = 0.1f;
+	InteractionCheckDistance = 225.0f;
+	BaseEyeHeight = 78.f;
+
 }
 //MoveForward
 void AMyFirstCharacter::MoveForward(const FInputActionValue& Value) {
@@ -150,6 +156,7 @@ void AMyFirstCharacter::Landed(const FHitResult& Hit) {
 	);
 }
 
+
 void AMyFirstCharacter::RestoreWalkSpeed() {
 	IsLanding = false;
 	GetCharacterMovement()->MaxWalkSpeed = MovementSpeed;
@@ -176,6 +183,16 @@ void AMyFirstCharacter::Dash(float ForwardValue, float RightValue) {
 	}	
 }
 
+void AMyFirstCharacter::DashCooldown(float DeltaTime) {
+	if (!CanUseDash) {
+		CurTime += DeltaTime;
+		if (CurTime >= BreakTime) {
+			CanUseDash = true;
+			UGameplayStatics::PlaySoundAtLocation(this, DashSound, GetActorLocation());
+			CurTime = 0.f;
+		}
+	}
+}
 
 void AMyFirstCharacter::DashInput() {
 	Dash(CachedMoveInput.X, CachedMoveInput.Y);
@@ -231,6 +248,7 @@ void AMyFirstCharacter::UpdateStaminaBar() {
 		StaminaBarWidget->SetProgressPrecent(CurSprintTime / MaxSprintTime);
 	}
 }
+
 
 void AMyFirstCharacter::Attack(const FInputActionValue& Value) {
 	if (AttackMontage) {
@@ -291,6 +309,119 @@ void AMyFirstCharacter::LineTrace() {
 	}
 }
 
+void AMyFirstCharacter::PerformInteractionCheck() {
+	// get world time second 
+	InteractionData.LastInteractionCheckTime = GetWorld()->GetTimeSeconds();
+
+	// create trace start and end vector
+	FVector TraceStart{GetPawnViewLocation()};
+	FVector TraceEnd{ TraceStart + (GetViewRotation().Vector()) * InteractionCheckDistance };
+
+	//setup line trace
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(this);
+	FHitResult TraceHit;
+
+	float LookDirection = FVector::DotProduct(GetActorForwardVector(), GetViewRotation().Vector());
+
+	if (LookDirection > 0) {
+
+		DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, 1.0f, 0, 2.0f);
+		//LineTrace
+		if (GetWorld()->LineTraceSingleByChannel(TraceHit, TraceStart, TraceEnd, ECC_Visibility, QueryParams)) {
+
+			if (TraceHit.GetActor()->GetClass()->ImplementsInterface(UInteractionInterface::StaticClass())) {
+
+				if (TraceHit.GetActor() != InteractionData.CurrentInteractable) {
+					FoundInteractable(TraceHit.GetActor());
+					return;
+				}
+
+				if (TraceHit.GetActor() == InteractionData.CurrentInteractable) {
+					return;
+				}
+			}
+		}
+		NoInteractableFound();
+	}
+}
+
+void AMyFirstCharacter::FoundInteractable(AActor* NewInteractable) {
+
+	if (IsInteracting()) {
+		EndInteract();
+	}
+	if (InteractionData.CurrentInteractable) {
+		TargetInteractable = InteractionData.CurrentInteractable;
+		TargetInteractable->EndFocus();
+	}
+	
+	InteractionData.CurrentInteractable = NewInteractable;
+	TargetInteractable = InteractionData.CurrentInteractable;
+
+	TargetInteractable->BeginFocus();
+}
+
+void AMyFirstCharacter::NoInteractableFound() {
+
+	if (IsInteracting()) {
+		GetWorldTimerManager().ClearTimer(TimerHandle_Interaction);
+	}
+
+	if (InteractionData.CurrentInteractable) {
+		if (IsValid(TargetInteractable.GetObject())) {
+			TargetInteractable->EndFocus();
+		}
+	}
+
+
+
+
+	InteractionData.CurrentInteractable = nullptr;
+	TargetInteractable = nullptr;
+}
+
+void AMyFirstCharacter::BeginInteract() {
+
+	// verify nothing has chagned since tick func
+	PerformInteractionCheck();
+
+	if (InteractionData.CurrentInteractable) {
+		if (IsValid(TargetInteractable.GetObject())) {
+			TargetInteractable->BeginInteract();
+
+			if (FMath::IsNearlyZero(TargetInteractable->InteractableData.InteractionDuration, 0.1f)) {
+				Interact();
+			}
+			else {
+				GetWorldTimerManager().SetTimer(TimerHandle_Interaction,
+					this,
+					&AMyFirstCharacter::Interact,
+					TargetInteractable->InteractableData.InteractionDuration,
+					false
+				);
+			}
+		}	
+	}
+}
+
+void AMyFirstCharacter::EndInteract() {
+	GetWorldTimerManager().ClearTimer(TimerHandle_Interaction);
+
+	if (IsValid(TargetInteractable.GetObject())) {
+		TargetInteractable->EndInteract();
+	}
+}
+
+void AMyFirstCharacter::Interact() {
+	GetWorldTimerManager().ClearTimer(TimerHandle_Interaction);
+
+	if (IsValid(TargetInteractable.GetObject())) {
+		TargetInteractable->Interact();
+	}
+}
+
+
 
 // Called when the game starts or when spawned
 void AMyFirstCharacter::BeginPlay() {
@@ -312,33 +443,38 @@ void AMyFirstCharacter::BeginPlay() {
 			StaminaBarWidget->AddToViewport();
 		}
 	}
+
+
 }
 
 // Called every frame
 void AMyFirstCharacter::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
-	if (!CanUseDash) {
-		CurTime += DeltaTime;
-		if (CurTime >= BreakTime) {
-			CanUseDash = true;
-			UGameplayStatics::PlaySoundAtLocation(this, DashSound, GetActorLocation());
-			CurTime = 0.f;
-		}
-	}
+
+	// dash cooldown
+	DashCooldown(DeltaTime);
+
+	// making movement more smooth
 	FVector Velocity = GetVelocity();
 	FVector HorizontalVelocity = FVector(Velocity.X, Velocity.Y, 0.f);
 
 	bool bIsMoving = HorizontalVelocity.SizeSquared() > KINDA_SMALL_NUMBER;
-
 	GetCharacterMovement()->bOrientRotationToMovement = bIsMoving;
+
 
 	SprintAdj(DeltaTime);
 
+	// when the camere gets too close to the player it will make players mesh invinsible
 	if (FVector::Dist(Camera->GetComponentLocation(), GetMesh()->GetComponentLocation()) < 50.f) {
 		GetMesh()->SetVisibility(false, true);
 	}
 	else {
 		GetMesh()->SetVisibility(true, true);
+	}
+
+	//check trace line shooting frequency
+	if (GetWorld()->TimeSince(InteractionData.LastInteractionCheckTime) > InteractionCheckFrequency) {
+		PerformInteractionCheck();
 	}
 }
 
@@ -364,5 +500,8 @@ void AMyFirstCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 		Input->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMyFirstCharacter::Look);
 
 		Input->BindAction(AttackAction, ETriggerEvent::Started, this, &AMyFirstCharacter::Attack);
+
+		Input->BindAction(InteractAction, ETriggerEvent::Started, this, &AMyFirstCharacter::BeginInteract);
+		Input->BindAction(InteractAction, ETriggerEvent::Completed, this, &AMyFirstCharacter::EndInteract);
 	}
 }
