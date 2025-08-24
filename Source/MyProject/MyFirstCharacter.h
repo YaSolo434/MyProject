@@ -26,6 +26,7 @@ class UWidgetComponent;
 class ASword;
 class UHealthComponent;
 class ATakingXp;
+class AMyFirstHUD;
 
 USTRUCT()
 struct FInteractionData
@@ -231,5 +232,8 @@ protected:
 	void Interact();
 
 	FORCEINLINE bool IsInteracting() const { return GetWorldTimerManager().IsTimerActive(TimerHandle_Interaction); };
+
+	UPROPERTY()
+	AMyFirstHUD* HUD;
 
 };

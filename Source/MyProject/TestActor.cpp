@@ -34,7 +34,7 @@ void ATestActor::EndInteract() {
 	UE_LOG(LogTemp, Warning, TEXT("Calling EndInteract override on interface test actor "));
 }
 
-void ATestActor::Interact() {
+void ATestActor::Interact(AMyFirstCharacter* PlayerCharacter) {
 	UE_LOG(LogTemp, Warning, TEXT("Calling Interact override on interface test actor "));
 }
 
@@ -42,7 +42,8 @@ void ATestActor::Interact() {
 void ATestActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	InteractableData = InstanceInteractableData;
 }
 
 // Called every frame

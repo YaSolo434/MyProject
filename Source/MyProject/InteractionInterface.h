@@ -6,6 +6,8 @@
 #include "UObject/Interface.h"
 #include "InteractionInterface.generated.h"
 
+class AMyFirstCharacter;
+
 UENUM()
 enum class EInteractableType : uint8
 {
@@ -74,7 +76,7 @@ public:
 	virtual void EndFocus() = 0;
 	virtual void BeginInteract() = 0;
 	virtual void EndInteract() = 0;
-	virtual void Interact() = 0;
+	virtual void Interact(AMyFirstCharacter* PlayerCharacter) = 0;
 
 	FInteractableData InteractableData;
 };

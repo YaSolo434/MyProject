@@ -22,7 +22,7 @@
 #include "Grass.h"
 #include "Components/WidgetComponent.h"
 #include "HealthBar.h"
-
+#include "MyFirstHUD.h"
 // Sets default values
 AMyFirstCharacter::AMyFirstCharacter() {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -359,6 +359,8 @@ void AMyFirstCharacter::FoundInteractable(AActor* NewInteractable) {
 	InteractionData.CurrentInteractable = NewInteractable;
 	TargetInteractable = InteractionData.CurrentInteractable;
 
+	HUD->UpdateInteractionWidget(&TargetInteractable->InteractableData);
+
 	TargetInteractable->BeginFocus();
 }
 
@@ -374,8 +376,7 @@ void AMyFirstCharacter::NoInteractableFound() {
 		}
 	}
 
-
-
+	HUD->HideInteractionWidget();
 
 	InteractionData.CurrentInteractable = nullptr;
 	TargetInteractable = nullptr;
@@ -405,6 +406,14 @@ void AMyFirstCharacter::BeginInteract() {
 	}
 }
 
+void AMyFirstCharacter::Interact() {
+	GetWorldTimerManager().ClearTimer(TimerHandle_Interaction);
+
+	if (IsValid(TargetInteractable.GetObject())) {
+		TargetInteractable->Interact(this);
+	}
+}
+
 void AMyFirstCharacter::EndInteract() {
 	GetWorldTimerManager().ClearTimer(TimerHandle_Interaction);
 
@@ -413,13 +422,6 @@ void AMyFirstCharacter::EndInteract() {
 	}
 }
 
-void AMyFirstCharacter::Interact() {
-	GetWorldTimerManager().ClearTimer(TimerHandle_Interaction);
-
-	if (IsValid(TargetInteractable.GetObject())) {
-		TargetInteractable->Interact();
-	}
-}
 
 
 
@@ -444,6 +446,7 @@ void AMyFirstCharacter::BeginPlay() {
 		}
 	}
 
+	HUD = Cast<AMyFirstHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 
 }
 
@@ -504,4 +507,4 @@ void AMyFirstCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 		Input->BindAction(InteractAction, ETriggerEvent::Started, this, &AMyFirstCharacter::BeginInteract);
 		Input->BindAction(InteractAction, ETriggerEvent::Completed, this, &AMyFirstCharacter::EndInteract);
 	}
-}
+}	
