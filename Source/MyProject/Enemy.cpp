@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "Enemy.h"
 #include "HealthBar.h"
 #include "Components/WidgetComponent.h"
 
-#include "Enemy.h"
 
 // Sets default values
 AEnemy::AEnemy()
