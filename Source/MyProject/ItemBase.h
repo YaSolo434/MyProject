@@ -8,6 +8,7 @@
 #include "ItemBase.generated.h"
 
 class AMyFirstCharacter;
+class UInventoryComponent;
 
 UCLASS()
 class MYPROJECT_API UItemBase : public UObject
@@ -15,6 +16,8 @@ class MYPROJECT_API UItemBase : public UObject
 	GENERATED_BODY()
 
 public:
+	UPROPERTY()
+	UInventoryComponent* OwningInventory;
 
 	UPROPERTY(VisibleAnywhere, Category = "Item")
 	int32 Quantity;

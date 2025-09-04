@@ -3,6 +3,7 @@
 
 #include "ItemBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "InventoryComponent.h"
 
 
 UItemBase::UItemBase() {
@@ -29,6 +30,14 @@ void UItemBase::SetQuantity(int32 NewQuantity) {
 	
 	if (NewQuantity != Quantity) {
 		Quantity = FMath::Clamp(NewQuantity, 0, NumericData.bIsStackable ? NumericData.MaxStackSize : 1);
+	}
+
+	if (OwningInventory)
+	{
+		if (Quantity <= 0)
+		{
+			OwningInventory->RemoveSingleInstanceOfItem(this);
+		}
 	}
 }
 

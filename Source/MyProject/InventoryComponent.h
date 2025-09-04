@@ -6,6 +6,8 @@
 #include "Components/ActorComponent.h"
 #include "InventoryComponent.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(FOnInventoryUpdated)
+
 class UItemBase;
 
 UENUM(BlueprintType)
@@ -35,7 +37,7 @@ struct FItemAddResult
 	UPROPERTY(BlueprintReadOnly, Category = "Item Add Result")
 	EItemAddResult OperationResult;
 
-	//a informational text that can be used for describing the result of process
+	//an informational text that can be used for describing the result of process
 	UPROPERTY(BlueprintReadOnly, Category = "Item Add Result")
 	FText ResultMessage;
 
@@ -78,45 +80,79 @@ class MYPROJECT_API UInventoryComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:	
+	//=================================================================================================
+	// PROPERTIES & VARIABLES
+	//=================================================================================================
+	FOnInventoryUpdated OnInventoryUpdated;
+
+
+	//=================================================================================================
+	// FUNCTIONS
+	//=================================================================================================
+
 	// Sets default values for this component's properties
 	UInventoryComponent();
 
-	UItemBase* FindMatchingItem(UItemBase* ItemIn) const;
-	UItemBase* FindNextItemById(UItemBase* ItemIn) const;
-	UItemBase* FindNextPartialStack(UItemBase* ItemIn) const;
-
+	UFUNCTION(Category = "Inventory")
 	FItemAddResult HandleAddItem(UItemBase* InputItem);
 
-	void RemoveSingleInstanceOfItem(UItemBase* ItemIn);
-	int32 RemoveAmountOfItem(UItemBase* ItemIn, int32 DesiredAmountToRemove);
+	//finds item from item base
+	UFUNCTION(Category = "Inventory")
+	UItemBase* FindMatchingItem(UItemBase* ItemIn) const;
+	UFUNCTION(Category = "Inventory")
+	UItemBase* FindNextItemById(UItemBase* ItemIn) const;
+	UFUNCTION(Category = "Inventory")
+	UItemBase* FindNextPartialStack(UItemBase* ItemIn) const;
 
+	//removes the item
+	UFUNCTION(Category = "Inventory")
+	void RemoveSingleInstanceOfItem(UItemBase* ItemToRemove);
+	UFUNCTION(Category = "Inventory")
+	int32 RemoveAmountOfItem(UItemBase* ItemIn, int32 DesiredAmountToRemove);
+	UFUNCTION(Category = "Inventory")
 	void SplitExistingStack(UItemBase* ItemIn, const int32 AmountToSplit);
 
-	FORCEINLINE float GetInventoryTotalWeight() const {};
-	FORCEINLINE float GetWeightCapacity() const {};
-	FORCEINLINE int32 GetSlotsCapacity() const {};
-	FORCEINLINE TArray<UItemBase*> GetInventoryContents() const {};
+	//getters
+	UFUNCTION(Category = "Inventory")
+	FORCEINLINE float GetInventoryTotalWeight() const { return InventoryTotalWeight; };
+	UFUNCTION(Category = "Inventory")
+	FORCEINLINE float GetWeightCapacity() const { return InventoryWeightCapacity; };
+	UFUNCTION(Category = "Inventory")
+	FORCEINLINE int32 GetSlotsCapacity() const { return InventorySlotsCapacity; };
+	UFUNCTION(Category = "Inventory")
+	FORCEINLINE TArray<UItemBase*> GetInventoryContents() const { return InventoryContents; };
 
-	FORCEINLINE	void SetSlotsCapacity(const int32 NewSlotsCapacity) {};
-	FORCEINLINE void SetWeightCapacity(const float NewWeightCapacity) {};
+	//setters
+	UFUNCTION(Category = "Inventory")
+	FORCEINLINE	void SetSlotsCapacity(const int32 NewSlotsCapacity) { InventorySlotsCapacity = NewSlotsCapacity; };
+	UFUNCTION(Category = "Inventory")
+	FORCEINLINE void SetWeightCapacity(const float NewWeightCapacity) { InventoryWeightCapacity = NewWeightCapacity; };
 
 
 protected:
-
+	//=================================================================================================
+	// PROPERTIES & VARIABLES
+	//=================================================================================================
+	UPROPERTY(VisibleAnywhere, Category = "Inventory")
 	float InventoryTotalWeight;
+	UPROPERTY(EditInstanceOnly, Category = "Inventory")
 	int32 InventorySlotsCapacity;
+	UPROPERTY(EditInstanceOnly, Category = "Inventory")
 	float InventoryWeightCapacity;
 
+	UPROPERTY(VisibleAnywhere, Category = "Inventory")
 	TArray<TObjectPtr<UItemBase>> InventoryContents;
 
-
+	//=================================================================================================
+	// FUNCTIONS
+	//=================================================================================================
 	virtual void BeginPlay() override;
 
-	FItemAddResult HandleNonStackableItems(UItemBase*, int32 RequestedAddAmount);
+	FItemAddResult HandleNonStackableItems(UItemBase* ItemIn, int32 RequestedAddAmount);
 	int32 HandleStackableItems(UItemBase*, int32 RequestedAddAmount);
 
-	int32 CalculateWeightAddAmount(UItemBase*, int32 RequestedAddAmount);
-	int32 CalculateNumberForFullStack(UItemBase* ExistingItem, int32 InitialRequestedAddAmount);
+	int32 CalculateWeightAddAmount(UItemBase* ItemIn, int32 RequestedAddAmount);
+	int32 CalculateNumberForFullStack(UItemBase* StackableItem, int32 InitialRequestedAddAmount);
 
 	void AddNewItem(UItemBase* Item, int32 AmountToAdd);
 };
