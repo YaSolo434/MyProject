@@ -23,6 +23,7 @@
 #include "Components/WidgetComponent.h"
 #include "HealthBar.h"
 #include "MyFirstHUD.h"
+#include "InventoryComponent.h"
 // Sets default values
 AMyFirstCharacter::AMyFirstCharacter() {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -42,12 +43,16 @@ AMyFirstCharacter::AMyFirstCharacter() {
 	GetCharacterMovement()->JumpZVelocity = 800.f;
 	GetCharacterMovement()->AirControl = 0.5f;
 	GetCharacterMovement()->MaxWalkSpeed = MovementSpeed;
+	
+	//initialize inventory
+	PlayerInventory = CreateDefaultSubobject<UInventoryComponent>(TEXT("PlayerInventory"));
+	PlayerInventory->SetSlotsCapacity(20);
+	PlayerInventory->SetWeightCapacity(60);
 
 	//set interaction trace vars
 	InteractionCheckFrequency = 0.1f;
 	InteractionCheckDistance = 225.0f;
 	BaseEyeHeight = 78.f;
-
 }
 //MoveForward
 void AMyFirstCharacter::MoveForward(const FInputActionValue& Value) {
@@ -156,7 +161,6 @@ void AMyFirstCharacter::Landed(const FHitResult& Hit) {
 	);
 }
 
-
 void AMyFirstCharacter::RestoreWalkSpeed() {
 	IsLanding = false;
 	GetCharacterMovement()->MaxWalkSpeed = MovementSpeed;
@@ -197,6 +201,7 @@ void AMyFirstCharacter::DashCooldown(float DeltaTime) {
 void AMyFirstCharacter::DashInput() {
 	Dash(CachedMoveInput.X, CachedMoveInput.Y);
 }
+
 
 void AMyFirstCharacter::AddCoin(int Amount) {
 	TotalCoin += Amount;
@@ -283,7 +288,7 @@ void AMyFirstCharacter::LineTrace() {
 
 	//Linetrace
 	GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility, TraceParams);
-	DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 1.0f, 0, 2.0f);
+	//DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 1.0f, 0, 2.0f);
 
 	//Get HitActor that gets hit by sword
 	if (HitResult.bBlockingHit) {
@@ -422,8 +427,15 @@ void AMyFirstCharacter::EndInteract() {
 	}
 }
 
+void AMyFirstCharacter::UpdateInteractionWidget() const {
+	if (IsValid(TargetInteractable.GetObject())) {
+		HUD->UpdateInteractionWidget(&TargetInteractable->InteractableData);
+	}
+}
 
-
+void AMyFirstCharacter::ToggleMenu() {
+	HUD->ToggleMenu();
+}
 
 // Called when the game starts or when spawned
 void AMyFirstCharacter::BeginPlay() {
@@ -506,5 +518,7 @@ void AMyFirstCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 		Input->BindAction(InteractAction, ETriggerEvent::Started, this, &AMyFirstCharacter::BeginInteract);
 		Input->BindAction(InteractAction, ETriggerEvent::Completed, this, &AMyFirstCharacter::EndInteract);
+		
+		Input->BindAction(ToggleMenuAction, ETriggerEvent::Started, this, &AMyFirstCharacter::ToggleMenu);
 	}
 }	

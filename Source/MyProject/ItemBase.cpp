@@ -6,8 +6,8 @@
 #include "InventoryComponent.h"
 
 
-UItemBase::UItemBase() {
-
+UItemBase::UItemBase() : bIsCopy(false), bIsPickup(false)
+{
 }
 
 UItemBase* UItemBase::CreateItemCopy() const {
@@ -22,8 +22,14 @@ UItemBase* UItemBase::CreateItemCopy() const {
 	ItemCopy->NumericData = this->NumericData;
 	ItemCopy->Statistics = this->Statistics;
 	ItemCopy->AssetData = this->AssetData;
+	ItemCopy->bIsCopy = true;
 	
 	return ItemCopy;
+}
+
+void UItemBase::ResetFlags() {
+	bIsCopy = false;
+	bIsPickup = false;
 }
 
 void UItemBase::SetQuantity(int32 NewQuantity) {
@@ -43,3 +49,4 @@ void UItemBase::SetQuantity(int32 NewQuantity) {
 
 void UItemBase::Use(AMyFirstCharacter* Character) {
 }
+

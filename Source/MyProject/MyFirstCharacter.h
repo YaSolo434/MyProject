@@ -27,6 +27,7 @@ class ASword;
 class UHealthComponent;
 class ATakingXp;
 class AMyFirstHUD;
+class UInventoryComponent;
 
 USTRUCT()
 struct FInteractionData
@@ -64,6 +65,10 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	FORCEINLINE UInventoryComponent* GetInventory() const { return PlayerInventory; };
+
+	void UpdateInteractionWidget() const;
 
 	void AddCoin(int Amount);
 
@@ -157,6 +162,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	UInputAction* InteractAction;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UInputAction* ToggleMenuAction;
+
+
 	void MoveForward(const FInputActionValue& Value);
 	void StopMoveForward(const FInputActionValue& Value);
 
@@ -224,12 +233,18 @@ protected:
 
 	FInteractionData InteractionData;
 
+	UPROPERTY(VisibleAnywhere, Category = "Inventory")
+	UInventoryComponent* PlayerInventory;
+
+
 	void PerformInteractionCheck();
 	void FoundInteractable(AActor* NewInteractable);
 	void NoInteractableFound();
 	void BeginInteract();
 	void EndInteract();
 	void Interact();
+
+	void ToggleMenu();
 
 	FORCEINLINE bool IsInteracting() const { return GetWorldTimerManager().IsTimerActive(TimerHandle_Interaction); };
 

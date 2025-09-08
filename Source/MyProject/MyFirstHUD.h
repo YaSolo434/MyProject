@@ -20,6 +20,9 @@ class MYPROJECT_API AMyFirstHUD : public AHUD
 	GENERATED_BODY()
 
 public:
+	//=================================================================================================
+	// PROPERTIES & VARIABLES
+	//=================================================================================================
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<UMainMenu> MainMenuClass;
 
@@ -28,22 +31,32 @@ public:
 
 	bool IsMenuVisible;
 
+	//=================================================================================================
+	// FUNCTIONS
+	//=================================================================================================
 	AMyFirstHUD();
 
 	void DisplayMenu();
 	void HideMenu();
+	void ToggleMenu();
 
 	void ShowInteractionWidget() const;
 	void HideInteractionWidget() const;
 	void UpdateInteractionWidget(const FInteractableData* InteractableData) const;
 
 protected:
+	//=================================================================================================
+	// PROPERTIES & VARIABLES
+	//=================================================================================================
 	UPROPERTY()
 	UMainMenu* MainMenu;
 
 	UPROPERTY()
 	UInteractionWidget* InteractionWidget;
 
+	//=================================================================================================
+	// FUNCTIONS
+	//=================================================================================================
 	virtual void BeginPlay() override;
 
 };

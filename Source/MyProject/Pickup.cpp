@@ -3,7 +3,8 @@
 
 #include "Pickup.h"
 #include "ItemBase.h"
-
+#include "MyFirstCharacter.h"
+#include "InventoryComponent.h"
 // Sets default values
 APickup::APickup()
 {
@@ -80,7 +81,34 @@ void APickup::Interact(AMyFirstCharacter* PlayerCharacter) {
 
 void APickup::TakePickup(const AMyFirstCharacter* Taker) {
 
+	if (!IsPendingKillPending()) {
+		if (ItemReference) {
+			if (UInventoryComponent* PlayerInventory = Taker->GetInventory()) {
+				const FItemAddResult AddResult = PlayerInventory->HandleAddItem(ItemReference);
 
+				switch (AddResult.OperationResult)
+				{
+				case EItemAddResult::IAR_NoItemAdded:
+					break;
+				case EItemAddResult::IAR_PartialAmountItemAdded:
+					UpdateInteractableData();
+					Taker->UpdateInteractionWidget();
+					break;
+				case EItemAddResult::IAR_AllItemAdded:
+					Destroy();
+					break;
+				}
+
+				UE_LOG(LogTemp, Warning, TEXT("%s"), *AddResult.ResultMessage.ToString());
+			}
+			else {
+				UE_LOG(LogTemp, Warning, TEXT("Player inventory is null"));
+			}
+		}
+		else {
+			UE_LOG(LogTemp, Warning, TEXT("Item reference is somehow null"));
+		}
+	}
 }
 
 void APickup::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) {
