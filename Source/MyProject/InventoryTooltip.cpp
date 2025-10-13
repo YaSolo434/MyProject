@@ -17,14 +17,14 @@ void UInventoryTooltip::NativeConstruct()
     {
     case EItemType::Equipment:
 		ItemType->SetText(FText::FromString("Equipment"));
-		SellValue->SetText(FText::Format(FText::FromString("{0} Crown"), FText::AsNumber(ItemBeingHovered->Statistics.Value)));
+		SellValue->SetText(FText::Format(FText::FromString("Sell Value: {0} Crown"), FText::AsNumber(ItemBeingHovered->Statistics.Value)));
         break;
 
     case EItemType::Consumable:
 		ItemType->SetText(FText::FromString("Consumable"));
 		DamageValue->SetVisibility(ESlateVisibility::Collapsed);
 		ArmorRating->SetVisibility(ESlateVisibility::Collapsed);
-		SellValue->SetText(FText::Format(FText::FromString("{0} Crown"), FText::AsNumber(ItemBeingHovered->Statistics.Value)));
+		SellValue->SetText(FText::Format(FText::FromString("Sell Value: {0} Crown"), FText::AsNumber(ItemBeingHovered->Statistics.Value)));
         break;
 
     case EItemType::Crafting:
@@ -32,7 +32,7 @@ void UInventoryTooltip::NativeConstruct()
 		DamageValue->SetVisibility(ESlateVisibility::Collapsed);
 		ArmorRating->SetVisibility(ESlateVisibility::Collapsed);
 		UsageText->SetVisibility(ESlateVisibility::Collapsed);
-		SellValue->SetText(FText::Format(FText::FromString("{0} Crown"), FText::AsNumber(ItemBeingHovered->Statistics.Value)));
+		SellValue->SetText(FText::Format(FText::FromString("Sell Value: {0} Crown"), FText::AsNumber(ItemBeingHovered->Statistics.Value)));
         break;
 
     case EItemType::Quest:
@@ -48,7 +48,7 @@ void UInventoryTooltip::NativeConstruct()
 		DamageValue->SetVisibility(ESlateVisibility::Collapsed);
 		ArmorRating->SetVisibility(ESlateVisibility::Collapsed);
 		UsageText->SetVisibility(ESlateVisibility::Collapsed);
-		SellValue->SetText(FText::Format(FText::FromString("{0} Crown"), FText::AsNumber(ItemBeingHovered->Statistics.Value)));
+		SellValue->SetText(FText::Format(FText::FromString("Sell Value: {0} Crown"), FText::AsNumber(ItemBeingHovered->Statistics.Value)));
         break;
 
     default: ;
@@ -64,7 +64,7 @@ void UInventoryTooltip::NativeConstruct()
 
 	if (ItemBeingHovered->NumericData.bIsStackable)
 	{
-		MaxStackSize->SetText(FText::AsNumber(ItemBeingHovered->NumericData.MaxStackSize));
+		MaxStackSize->SetText(FText::Format(FText::FromString("Max Stack Size: {0}"), FText::AsNumber(ItemBeingHovered->NumericData.MaxStackSize)));
 	}
 	else 
 	{

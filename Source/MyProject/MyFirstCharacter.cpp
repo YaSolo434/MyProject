@@ -416,6 +416,7 @@ void AMyFirstCharacter::Interact() {
 
 	if (IsValid(TargetInteractable.GetObject())) {
 		TargetInteractable->Interact(this);
+		UGameplayStatics::PlaySoundAtLocation(this, DashSound, GetActorLocation());
 	}
 }
 
@@ -448,7 +449,7 @@ void AMyFirstCharacter::BeginPlay() {
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
-
+ 
 	SpawnSword();
 
 	if (StaminaBarWidgetClass) {
