@@ -2,10 +2,14 @@
 
 
 #include "HealthBar.h"
+#include "Components/ProgressBar.h"
 
-void UHealthBar::SetProgressPrecent(float Precent) {
+void UHealthBar::SetHealthProgressPrecent(float Precent) {
 
-	if (ProgressBar) {
-		ProgressBar->SetPercent(FMath::Clamp(Precent, 0.f, 1.f));
+	if (HealthProgressBar) {
+		HealthProgressBar->SetPercent(FMath::Clamp(Precent, 0.f, 1.f));
+		if (HealthProgressBar->GetPercent() <= 0.0f) {
+			HealthProgressBar->SetVisibility(ESlateVisibility::Collapsed);
+		}
 	}
 }

@@ -55,7 +55,7 @@ void AEnemy::HitAnimation() {
 void AEnemy::UpdateHealthBar(float CurrentHealth, float MaxHealth) {
 	if (UUserWidget* Widget = HealthBarWidget->GetUserWidgetObject()) {
 		if (UHealthBar* HealthBar = Cast<UHealthBar>(Widget)) {
-			HealthBar->SetProgressPrecent(CurrentHealth / MaxHealth);
+			HealthBar->SetHealthProgressPrecent(CurrentHealth / MaxHealth);
 		}
 	}
 }

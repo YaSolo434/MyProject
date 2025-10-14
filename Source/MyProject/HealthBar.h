@@ -4,22 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "Components/ProgressBar.h"
 #include "HealthBar.generated.h"
 
-/**
- * 
- */
+class UProgressBar;
+
 UCLASS()
 class MYPROJECT_API UHealthBar : public UUserWidget
 {
 	GENERATED_BODY()
-	
 public:
 	UFUNCTION(BlueprintCallable)
-	void SetProgressPrecent(float Precent);
+	void SetHealthProgressPrecent(float Precent);
 
 protected:
 	UPROPERTY(meta = (BindWidget))
-	UProgressBar* ProgressBar;
+	UProgressBar* HealthProgressBar;
 };

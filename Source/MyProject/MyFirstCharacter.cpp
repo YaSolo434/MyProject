@@ -21,7 +21,7 @@
 #include "Engine/World.h"
 #include "Grass.h"
 #include "Components/WidgetComponent.h"
-#include "HealthBar.h"
+#include "StaminaBar.h"
 #include "MyFirstHUD.h"
 #include "InventoryComponent.h"
 // Sets default values
@@ -54,6 +54,63 @@ AMyFirstCharacter::AMyFirstCharacter() {
 	InteractionCheckDistance = 225.0f;
 	BaseEyeHeight = 78.f;
 }
+
+// Called when the game starts or when spawned
+void AMyFirstCharacter::BeginPlay() {
+	Super::BeginPlay();
+
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (PlayerController) {
+		UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
+		if (Subsystem && DefaultMappingContext) {
+			Subsystem->AddMappingContext(DefaultMappingContext, 0);
+		}
+	}
+
+	SpawnSword();
+
+	if (StaminaBarWidgetClass) {
+		StaminaBarWidget = CreateWidget<UStaminaBar>(GetWorld(), StaminaBarWidgetClass);
+		if (StaminaBarWidget) {
+			StaminaBarWidget->AddToViewport();
+		}
+	}
+
+	HUD = Cast<AMyFirstHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+
+}
+
+// Called every frame
+void AMyFirstCharacter::Tick(float DeltaTime) {
+	Super::Tick(DeltaTime);
+
+	// dash cooldown
+	DashCooldown(DeltaTime);
+
+	// making movement more smooth
+	FVector Velocity = GetVelocity();
+	FVector HorizontalVelocity = FVector(Velocity.X, Velocity.Y, 0.f);
+
+	bool bIsMoving = HorizontalVelocity.SizeSquared() > KINDA_SMALL_NUMBER;
+	GetCharacterMovement()->bOrientRotationToMovement = bIsMoving;
+
+
+	SprintAdj(DeltaTime);
+
+	// when the camera gets too close to the player it will make player mesh invinsible
+	if (FVector::Dist(Camera->GetComponentLocation(), GetMesh()->GetComponentLocation()) < 50.f) {
+		GetMesh()->SetVisibility(false, true);
+	}
+	else {
+		GetMesh()->SetVisibility(true, true);
+	}
+
+	//check trace line shooting frequency
+	if (GetWorld()->TimeSince(InteractionData.LastInteractionCheckTime) > InteractionCheckFrequency) {
+		PerformInteractionCheck();
+	}
+}
+
 //MoveForward
 void AMyFirstCharacter::MoveForward(const FInputActionValue& Value) {
 	if (!IsLanding) {
@@ -92,7 +149,7 @@ void AMyFirstCharacter::StopMoveRight(const FInputActionValue& Value) {
 }
 
 void AMyFirstCharacter::StartSprint(const FInputActionValue& Value) {
-	if (!IsLanding && CanSprint) {
+	if (!IsLanding && CanSprint && ) {
 		IsSprinting = true;
 		GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
 
@@ -119,10 +176,11 @@ void AMyFirstCharacter::SprintAdj(float DeltaTime) {
 		RegenTimer += DeltaTime;
 		if (RegenTimer >= DelayRegenTime) {
 			CurSprintTime += DeltaTime;
+			CanSprint = true;
+
 			if (CurSprintTime >= MaxSprintTime) {
 				CurSprintTime = MaxSprintTime;
 				RegenTimer = 0.f;
-				CanSprint = true;
 			}
 		}
 		UpdateStaminaBar();
@@ -250,7 +308,7 @@ USoundBase* AMyFirstCharacter::GetRandomWalkingSound() const {
 
 void AMyFirstCharacter::UpdateStaminaBar() {
 	if (StaminaBarWidget) {
-		StaminaBarWidget->SetProgressPrecent(CurSprintTime / MaxSprintTime);
+		StaminaBarWidget->SetStaminaPrecent(CurSprintTime / MaxSprintTime);
 	}
 }
 
@@ -436,62 +494,6 @@ void AMyFirstCharacter::UpdateInteractionWidget() const {
 
 void AMyFirstCharacter::ToggleMenu() {
 	HUD->ToggleMenu();
-}
-
-// Called when the game starts or when spawned
-void AMyFirstCharacter::BeginPlay() {
-	Super::BeginPlay();
-
-	APlayerController* PlayerController = Cast<APlayerController>(GetController());
-	if (PlayerController) {
-		UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
-		if (Subsystem && DefaultMappingContext) {
-			Subsystem->AddMappingContext(DefaultMappingContext, 0);
-		}
-	}
- 
-	SpawnSword();
-
-	if (StaminaBarWidgetClass) {
-		StaminaBarWidget = CreateWidget<UHealthBar>(GetWorld(), StaminaBarWidgetClass);
-		if (StaminaBarWidget) {
-			StaminaBarWidget->AddToViewport();
-		}
-	}
-
-	HUD = Cast<AMyFirstHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
-
-}
-
-// Called every frame
-void AMyFirstCharacter::Tick(float DeltaTime) {
-	Super::Tick(DeltaTime);
-
-	// dash cooldown
-	DashCooldown(DeltaTime);
-
-	// making movement more smooth
-	FVector Velocity = GetVelocity();
-	FVector HorizontalVelocity = FVector(Velocity.X, Velocity.Y, 0.f);
-
-	bool bIsMoving = HorizontalVelocity.SizeSquared() > KINDA_SMALL_NUMBER;
-	GetCharacterMovement()->bOrientRotationToMovement = bIsMoving;
-
-
-	SprintAdj(DeltaTime);
-
-	// when the camere gets too close to the player it will make players mesh invinsible
-	if (FVector::Dist(Camera->GetComponentLocation(), GetMesh()->GetComponentLocation()) < 50.f) {
-		GetMesh()->SetVisibility(false, true);
-	}
-	else {
-		GetMesh()->SetVisibility(true, true);
-	}
-
-	//check trace line shooting frequency
-	if (GetWorld()->TimeSince(InteractionData.LastInteractionCheckTime) > InteractionCheckFrequency) {
-		PerformInteractionCheck();
-	}
 }
 
 // Called to bind functionality to input

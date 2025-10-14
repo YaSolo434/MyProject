@@ -28,6 +28,7 @@ class UHealthComponent;
 class ATakingXp;
 class AMyFirstHUD;
 class UInventoryComponent;
+class UStaminaBar;
 
 USTRUCT()
 struct FInteractionData
@@ -211,10 +212,10 @@ protected:
 	USoundBase* GetRandomWalkingSound() const;
 
 	UPROPERTY(EditAnywhere, Category = "UI")
-	TSubclassOf<class UHealthBar> StaminaBarWidgetClass;
+	TSubclassOf<class UStaminaBar> StaminaBarWidgetClass;
 
 	UPROPERTY()
-	UHealthBar* StaminaBarWidget;
+	UStaminaBar* StaminaBarWidget;
 
 	UFUNCTION()
 	void UpdateStaminaBar();
