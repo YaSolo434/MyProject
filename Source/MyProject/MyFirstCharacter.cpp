@@ -149,7 +149,7 @@ void AMyFirstCharacter::StopMoveRight(const FInputActionValue& Value) {
 }
 
 void AMyFirstCharacter::StartSprint(const FInputActionValue& Value) {
-	if (!IsLanding && CanSprint && ) {
+	if (!IsLanding && CanSprint) {
 		IsSprinting = true;
 		GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
 

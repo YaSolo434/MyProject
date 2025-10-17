@@ -79,12 +79,11 @@ class MYPROJECT_API UInventoryComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
+public:
 	//=================================================================================================
 	// PROPERTIES & VARIABLES
 	//=================================================================================================
 	FOnInventoryUpdated OnInventoryUpdated;
-
 
 	//=================================================================================================
 	// FUNCTIONS

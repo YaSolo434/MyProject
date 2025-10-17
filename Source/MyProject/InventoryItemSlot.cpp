@@ -81,5 +81,4 @@ void UInventoryItemSlot::NativeOnDragDetected(const FGeometry& InGeometry, const
 bool UInventoryItemSlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
 {
 	return Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
-
 }
