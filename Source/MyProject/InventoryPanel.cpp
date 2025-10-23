@@ -37,16 +37,16 @@ void UInventoryPanel::SetTextInfo() const
 
 void UInventoryPanel::RefreshInventory()
 {
-	if (InventoryPanel && InventorySlotClass)
+	if (InventoryReference && InventorySlotClass)
 	{
-		InventoryPanel->ClearChildren();
+		InventoryWrapBox->ClearChildren();
 
 		for (UItemBase* const& InventoryItem : InventoryReference->GetInventoryContents())
 		{
 			UInventoryItemSlot* ItemSlot = CreateWidget<UInventoryItemSlot>(this, InventorySlotClass);
 			ItemSlot->SetItemReference(InventoryItem);
 
-			InventoryPanel->AddChild(ItemSlot);
+			InventoryWrapBox->AddChild(ItemSlot);
 		}
 	}
 	SetTextInfo();

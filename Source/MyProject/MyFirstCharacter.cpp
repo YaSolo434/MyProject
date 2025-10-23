@@ -114,6 +114,8 @@ void AMyFirstCharacter::Tick(float DeltaTime) {
 //MoveForward
 void AMyFirstCharacter::MoveForward(const FInputActionValue& Value) {
 	if (!IsLanding) {
+		IsMoving = true;
+
 		float AxisValue = Value.Get<float>();
 		if (Controller && AxisValue != 0.f)
 		{
@@ -127,6 +129,7 @@ void AMyFirstCharacter::MoveForward(const FInputActionValue& Value) {
 
 }
 void AMyFirstCharacter::StopMoveForward(const FInputActionValue& Value) {
+	IsMoving = false;
 	CachedMoveInput.X = 0.f;
 }
 //MoveRight
@@ -149,7 +152,7 @@ void AMyFirstCharacter::StopMoveRight(const FInputActionValue& Value) {
 }
 
 void AMyFirstCharacter::StartSprint(const FInputActionValue& Value) {
-	if (!IsLanding && CanSprint) {
+	if (!IsLanding && CanSprint && IsMoving) {
 		IsSprinting = true;
 		GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
 

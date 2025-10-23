@@ -98,6 +98,7 @@ private:
 
 	bool CanSprint = true;
 	bool IsSprinting = false;
+	bool IsMoving = false;
 
 	float CurSprintTime = MaxSprintTime;
 	float MaxSprintTime = 5.f;
