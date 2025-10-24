@@ -50,6 +50,36 @@ void UInventoryTooltip::NativeConstruct()
     default: ;
     }
 
+	switch (ItemBeingHovered->ItemQuality)
+	{
+	case EItemQuality::Basic:
+		ItemQuality->SetText(FText::FromString("Basic"));
+		ItemQuality->SetColorAndOpacity(FSlateColor(FLinearColor(0.8f, 0.8f, 0.8f)));
+		break;
+
+	case EItemQuality::Enchanted:
+		ItemQuality->SetText(FText::FromString("Enchanted"));
+		ItemQuality->SetColorAndOpacity(FSlateColor(FLinearColor(0.2f, 0.6f, 1.f)));
+		break;
+
+	case EItemQuality::Superior:
+		ItemQuality->SetText(FText::FromString("Superior"));
+		ItemQuality->SetColorAndOpacity(FSlateColor(FLinearColor(0.6f, 0.2f, 1.f)));
+		break;
+
+	case EItemQuality::MasterCrafted:
+		ItemQuality->SetText(FText::FromString("MasterCrafted"));
+		ItemQuality->SetColorAndOpacity(FSlateColor(FLinearColor(1.f, 0.6f, 0.f)));
+		break;
+
+	case EItemQuality::GrandMaster:
+		ItemQuality->SetText(FText::FromString("GrandMaster"));
+		ItemQuality->SetColorAndOpacity(FSlateColor(FLinearColor(1.f, 0.8f, 0.f)));
+		break;
+
+	default: ;
+	}
+
 	ItemName->SetText(ItemBeingHovered->DescriptiveText.DisplayName);
 	DamageValue->SetText(FText::AsNumber(ItemBeingHovered->Statistics.Damage));
 	ArmorRating->SetText(FText::AsNumber(ItemBeingHovered->Statistics.Defence));
@@ -58,6 +88,7 @@ void UInventoryTooltip::NativeConstruct()
 	SellValue->SetText(FText::Format(FText::FromString("{0} Crown"), FText::AsNumber(ItemBeingHovered->Statistics.Value)));
 	ItemDescription->SetText(ItemBeingHovered->DescriptiveText.Description);
 	StackWeight->SetText(FText::AsNumber(ItemBeingHovered->GetItemStackWeight()));
+
 
 	if (ItemBeingHovered->NumericData.bIsStackable)
 	{

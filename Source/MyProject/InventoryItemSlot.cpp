@@ -22,34 +22,6 @@ void UInventoryItemSlot::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	if (ItemReference)
-	{
-        switch (ItemReference->ItemQuality)
-        {
-        case EItemQuality::Basic:
-            ItemBorder->SetBrushColor(FLinearColor(0.8f, 0.8f, 0.8f)); // Gray
-            break;
-
-        case EItemQuality::Enchanted:
-            ItemBorder->SetBrushColor(FLinearColor(0.2f, 0.6f, 1.f)); // Blue
-            break;
-
-        case EItemQuality::Superior:
-            ItemBorder->SetBrushColor(FLinearColor(0.6f, 0.2f, 1.f)); // Purple
-            break;
-
-        case EItemQuality::MasterCrafted:
-            ItemBorder->SetBrushColor(FLinearColor(1.f, 0.6f, 0.f)); // Orange
-            break;
-
-        case EItemQuality::GrandMaster:
-            ItemBorder->SetBrushColor(FLinearColor(1.f, 0.8f, 0.f)); // Gold
-            break;
-
-        default:;
-        }
-	}
-
     ItemIcon->SetBrushFromTexture(ItemReference->AssetData.Icon);
 
     if (ItemReference->NumericData.bIsStackable)

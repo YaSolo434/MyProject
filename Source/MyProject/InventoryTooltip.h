@@ -45,6 +45,9 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* StackWeight;
 
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* ItemQuality;
+
 protected:
 	virtual void NativeConstruct() override;
 };
