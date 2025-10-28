@@ -164,8 +164,10 @@ void AMyFirstCharacter::StopSprint(const FInputActionValue& Value) {
 	GetCharacterMovement()->MaxWalkSpeed = MovementSpeed;
 }
 
-void AMyFirstCharacter::SprintAdj(float DeltaTime) {
-	if (IsSprinting && CanSprint) {
+void AMyFirstCharacter::SprintAdj(float DeltaTime) 
+{
+	if (IsSprinting && CanSprint) 
+	{
 		CurSprintTime -= DeltaTime;
 		RegenTimer = 0.f;
 		if (CurSprintTime <= 0.f) {
@@ -188,6 +190,9 @@ void AMyFirstCharacter::SprintAdj(float DeltaTime) {
 		}
 		UpdateStaminaBar();
 	}
+	UpdateStaminaBar();
+
+
 }
 
 void AMyFirstCharacter::Jump() {
