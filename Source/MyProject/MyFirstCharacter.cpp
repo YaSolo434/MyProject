@@ -199,6 +199,7 @@ void AMyFirstCharacter::Jump() {
 	if (!IsLanding) {
 		if (JumpCount < MaxJumpCount) {
 			if (JumpCount == 0) {
+				CanSprint = false;
 				IsJumping = true;
 				Super::Jump();
 			}
