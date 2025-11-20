@@ -15,7 +15,7 @@ class MYPROJECT_API UDragItemVisual : public UUserWidget
 {
 	GENERATED_BODY()
 
-protected:
+public:
 	UPROPERTY(VisibleAnyWhere, Category = "Drag Item Visual", meta = (BindWidget))
 	UBorder* ItemBorder;
 

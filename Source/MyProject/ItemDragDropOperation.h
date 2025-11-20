@@ -4,7 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/DragDropOperation.h"
+#include "ItemBase.h"
+#include "InventoryComponent.h"
 #include "ItemDragDropOperation.generated.h"
+
 
 /**
  * 
@@ -13,5 +16,12 @@ UCLASS()
 class MYPROJECT_API UItemDragDropOperation : public UDragDropOperation
 {
 	GENERATED_BODY()
+
+public:
+	UPROPERTY()
+	UItemBase* SourceItem;
+
+	UPROPERTY()
+	UInventoryComponent* SourceInventory;
 	
 };

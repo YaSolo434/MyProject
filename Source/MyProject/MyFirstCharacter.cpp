@@ -24,6 +24,7 @@
 #include "StaminaBar.h"
 #include "MyFirstHUD.h"
 #include "InventoryComponent.h"
+#include "Pickup.h"
 // Sets default values
 AMyFirstCharacter::AMyFirstCharacter() {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -381,6 +382,7 @@ void AMyFirstCharacter::LineTrace() {
 	}
 }
 
+
 void AMyFirstCharacter::PerformInteractionCheck() {
 	// get world time second 
 	InteractionData.LastInteractionCheckTime = GetWorld()->GetTimeSeconds();
@@ -492,6 +494,30 @@ void AMyFirstCharacter::EndInteract() {
 
 	if (IsValid(TargetInteractable.GetObject())) {
 		TargetInteractable->EndInteract();
+	}
+}
+
+void AMyFirstCharacter::DropItem(UItemBase* ItemToDrop, const int32 QuantityToDrop)
+{
+	if (PlayerInventory->FindMatchingItem(ItemToDrop))
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.bNoFail = true;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+		const FVector SpawnLocation{ GetActorLocation() + (GetActorForwardVector() * 50.0f) };
+		const FTransform SpawnTransform(GetActorRotation(), SpawnLocation);
+
+		const int32 RemovedQuantity = PlayerInventory->RemoveAmountOfItem(ItemToDrop, QuantityToDrop);
+
+		APickup* Pickup = GetWorld()->SpawnActor<APickup>(APickup::StaticClass(), SpawnTransform, SpawnParams);
+
+		Pickup->InitializeDrop(ItemToDrop, RemovedQuantity);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Item to drop was somehow failed!"));
 	}
 }
 

@@ -3,7 +3,8 @@
 
 #include "MainMenu.h"
 #include "MyFirstCharacter.h"
-
+#include "ItemDragDropOperation.h"
+#include "ItemBase.h"
 void UMainMenu::NativeOnInitialized() {
 
 	Super::NativeOnInitialized();
@@ -17,10 +18,16 @@ void UMainMenu::NativeConstruct() {
 	PlayerCharacter = Cast<AMyFirstCharacter>(GetOwningPlayerPawn());
 }
 
-bool UMainMenu::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) {
+bool UMainMenu::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
+{
+	const UItemDragDropOperation* ItemDragDrop = Cast<UItemDragDropOperation>(InOperation);
 
+	if (PlayerCharacter && ItemDragDrop->SourceItem)
+	{
+		PlayerCharacter->DropItem(ItemDragDrop->SourceItem, ItemDragDrop->SourceItem->Quantity);
+		return true;
+	}
+	return false;
 
-
-	return Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
 
 }

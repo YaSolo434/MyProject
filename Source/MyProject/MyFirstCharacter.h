@@ -29,6 +29,7 @@ class ATakingXp;
 class AMyFirstHUD;
 class UInventoryComponent;
 class UStaminaBar;
+class UItemBase;
 
 USTRUCT()
 struct FInteractionData
@@ -80,6 +81,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void LineTrace();
+
+	void DropItem(UItemBase* ItemToDrop, const int32 QuantityToDrop);
 
 private:
 
