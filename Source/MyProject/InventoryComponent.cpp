@@ -124,7 +124,61 @@ FItemAddResult UInventoryComponent::HandleNonStackableItems(UItemBase* ItemIn)
 
 int32 UInventoryComponent::HandleStackableItems(UItemBase* ItemIn, int32 RequestedAddAmount)
 {
-	return RequestedAddAmount;
+	if (RequestedAddAmount <= 0 || FMath::IsNearlyZero(ItemIn->GetItemStackWeight()))
+	{
+		// invalid item data
+		return 0;
+	}
+	
+	int32  AmountToDistribute = RequestedAddAmount;
+
+	UItemBase* ExistingItem = FindNextPartialStack(ItemIn);
+
+	while (ExistingItem)
+	{
+		const int32 AmountToMakeFullStack = CalculateNumberForFullStack(ExistingItem, AmountToDistribute);
+		const int32 WeightLimitAddAmount = CalculateWeightAddAmount(ExistingItem, AmountToMakeFullStack);
+
+		if (WeightLimitAddAmount > 0)
+		{
+			ExistingItem->SetQuantity(ExistingItem->Quantity + WeightLimitAddAmount);
+			InventoryTotalWeight += (ExistingItem->GetItemSingleWeight() * WeightLimitAddAmount);
+
+			AmountToDistribute -= WeightLimitAddAmount;
+
+			ItemIn->SetQuantity(AmountToDistribute);
+			
+			if (InventoryTotalWeight >= InventoryWeightCapacity)
+			{
+				OnInventoryUpdated.Broadcast();
+				return RequestedAddAmount - AmountToDistribute;
+			}
+		}
+		else if (WeightLimitAddAmount <= 0) 
+		{
+			if (AmountToDistribute != RequestedAddAmount)
+			{
+				OnInventoryUpdated.Broadcast();
+				return RequestedAddAmount - AmountToDistribute;
+			}
+
+			return 0;
+		}
+		if (AmountToDistribute <= 0)
+		{
+			OnInventoryUpdated.Broadcast();
+			return RequestedAddAmount;
+		}
+
+		ExistingItem = FindNextPartialStack(ItemIn);
+	}
+	
+	if (InventoryContents.Num() + 1 <= InventorySlotsCapacity)
+	{
+		
+	}
+
+
 }
 
 FItemAddResult UInventoryComponent::HandleAddItem(UItemBase* InputItem)
