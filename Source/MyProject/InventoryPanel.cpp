@@ -5,6 +5,7 @@
 #include "MyFirstCharacter.h"
 #include "InventoryComponent.h"
 #include"InventoryItemSlot.h"
+#include"ItemDragDropOperation.h"
 
 void UInventoryPanel::NativeOnInitialized()
 {
@@ -56,6 +57,14 @@ bool UInventoryPanel::NativeOnDrop(const FGeometry& InGeometry, const FDragDropE
 {
 	Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
 
+	const UItemDragDropOperation* ItemDragDrop = Cast<UItemDragDropOperation>(InOperation);
+
+	if (ItemDragDrop->SourceItem && InventoryReference)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Detected an item drop on inventory panel"));
+
+		return true;
+	}
 
 	return false;
 }

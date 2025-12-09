@@ -82,7 +82,7 @@ int32 UInventoryComponent::RemoveAmountOfItem(UItemBase* ItemIn, int32 DesiredAm
 
 	OnInventoryUpdated.Broadcast();
 
-	return NULL;
+	return ActualAmountToRemove;
 }
 
 void UInventoryComponent::SplitExistingStack(UItemBase* ItemIn, const int32 AmountToSplit)
@@ -202,10 +202,11 @@ int32 UInventoryComponent::HandleStackableItems(UItemBase* ItemIn, int32 Request
 
 			return RequestedAddAmount;
 		}
+		return RequestedAddAmount - AmountToDistribute;
 	}
 	OnInventoryUpdated.Broadcast();
 
-	return RequestedAddAmount - AmountToDistribute;
+	return 0;
 }
 
 FItemAddResult UInventoryComponent::HandleAddItem(UItemBase* InputItem)

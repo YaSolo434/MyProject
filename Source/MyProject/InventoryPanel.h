@@ -11,6 +11,7 @@
 class UInventoryItemSlot;
 class UInventoryComponent;
 class AMyFirstCharacter;
+class UItemDragDropOperation;
 
 UCLASS()
 class MYPROJECT_API UInventoryPanel : public UUserWidget
