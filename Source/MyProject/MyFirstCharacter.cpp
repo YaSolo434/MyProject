@@ -79,6 +79,10 @@ void AMyFirstCharacter::BeginPlay() {
 
 	HUD = Cast<AMyFirstHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 
+	//limit the camera
+	APlayerCameraManager* const PlayerCameraManager = GetWorld()->GetFirstPlayerController()->PlayerCameraManager;
+	PlayerCameraManager->ViewPitchMin = -50.f;
+	PlayerCameraManager->ViewPitchMax = 10.f;
 }
 
 // Called every frame

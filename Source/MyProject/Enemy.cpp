@@ -23,15 +23,11 @@ AEnemy::AEnemy()
 	SwordMesh->SetupAttachment(GetMesh(), FName("R_HandSocket"));
 }
 
-// Called when the game starts or when spawned
-void AEnemy::BeginPlay()
+UBehaviorTree* AEnemy::GetBehaviourTree() const
 {
-	Super::BeginPlay();
-	
-	HealthComp->OnDeath.AddDynamic(this, &AEnemy::Die);
-	HealthComp->OnDamaged.AddDynamic(this, &AEnemy::HitAnimation);
-	HealthComp->OnHealthChanged.AddDynamic(this, &AEnemy::UpdateHealthBar);
+	return EnemyTree;
 }
+
 
 void AEnemy::Die() {
 
@@ -58,6 +54,15 @@ void AEnemy::UpdateHealthBar(float CurrentHealth, float MaxHealth) {
 			HealthBar->SetHealthProgressPrecent(CurrentHealth / MaxHealth);
 		}
 	}
+}
+// Called when the game starts or when spawned
+void AEnemy::BeginPlay()
+{
+	Super::BeginPlay();
+
+	HealthComp->OnDeath.AddDynamic(this, &AEnemy::Die);
+	HealthComp->OnDamaged.AddDynamic(this, &AEnemy::HitAnimation);
+	HealthComp->OnHealthChanged.AddDynamic(this, &AEnemy::UpdateHealthBar);
 }
 
 // Called every frame
