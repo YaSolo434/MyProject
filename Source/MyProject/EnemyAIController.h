@@ -6,9 +6,8 @@
 #include "AIController.h"
 #include "EnemyAIController.generated.h"
 
-/**
- * 
- */
+class UAISenseConfig_Sight;
+
 UCLASS()
 class MYPROJECT_API AEnemyAIController : public AAIController
 {
@@ -19,4 +18,11 @@ public:
 
 protected:
 	virtual void OnPossess(APawn* InPawn) override;
+private:
+	class UAISenseConfig_Sight* SightConfig;
+
+	void SetupPerceptionSystem();
+
+	UFUNCTION()
+	void OnTargetDetected(AActor* Actor, FAIStimulus const Stimulus);
 };

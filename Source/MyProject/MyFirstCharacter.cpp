@@ -25,6 +25,9 @@
 #include "MyFirstHUD.h"
 #include "InventoryComponent.h"
 #include "Pickup.h"
+#include "Perception/AIPerceptionStimuliSourceComponent.h"
+#include "Perception/AISenseConfig_Sight.h"
+
 // Sets default values
 AMyFirstCharacter::AMyFirstCharacter() {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -67,7 +70,7 @@ void AMyFirstCharacter::BeginPlay() {
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
-
+	
 	SpawnSword();
 
 	if (StaminaBarWidgetClass) {
@@ -353,7 +356,7 @@ void AMyFirstCharacter::LineTrace() {
 	FVector StartLocation = SwordMesh->GetSocketLocation(FName("Start"));
 	FVector EndLocation = SwordMesh->GetSocketLocation(FName("End"));
 	
-	//Setup linetrace
+	//Setup line trace
 	FHitResult HitResult;
 	FCollisionQueryParams TraceParams;
 	TraceParams.AddIgnoredActor(this);
@@ -361,7 +364,7 @@ void AMyFirstCharacter::LineTrace() {
 	//Linetrace
 	GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility, TraceParams);
 	//DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 1.0f, 0, 2.0f);
-
+	if (!HitResult.GetActor()) { return; }
 	//Get HitActor that gets hit by sword
 	if (HitResult.bBlockingHit) {
 		UE_LOG(LogTemp, Warning, TEXT("Hit actor: %s"), *HitResult.GetActor()->GetName());
@@ -404,10 +407,14 @@ void AMyFirstCharacter::PerformInteractionCheck() {
 
 	if (LookDirection > 0) {
 
-		DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, 1.0f, 0, 2.0f);
+		//DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, 1.0f, 0, 2.0f);
 		//LineTrace
 		if (GetWorld()->LineTraceSingleByChannel(TraceHit, TraceStart, TraceEnd, ECC_Visibility, QueryParams)) {
-
+			if (!TraceHit.GetActor())
+			{
+				NoInteractableFound();
+				return;
+			}
 			if (TraceHit.GetActor()->GetClass()->ImplementsInterface(UInteractionInterface::StaticClass())) {
 
 				if (TraceHit.GetActor() != InteractionData.CurrentInteractable) {
@@ -533,6 +540,17 @@ void AMyFirstCharacter::UpdateInteractionWidget() const {
 
 void AMyFirstCharacter::ToggleMenu() {
 	HUD->ToggleMenu();
+}
+
+void AMyFirstCharacter::SetupStimulusSource()
+{
+	StimulusSource = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("Stimulus"));
+
+	if (StimulusSource)
+	{
+		StimulusSource->RegisterForSense(TSubclassOf<UAISense_Sight>());
+		StimulusSource->RegisterWithPerceptionSystem();
+	}
 }
 
 // Called to bind functionality to input

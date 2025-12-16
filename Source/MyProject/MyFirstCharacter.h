@@ -7,10 +7,8 @@
 #include "TakingXp.h"
 #include "InteractionInterface.h"
 
-
 #include "MyFirstCharacter.generated.h"
 
-// Forward declarations (only need pointers/references here)
 class UCameraComponent;
 class USpringArmComponent;
 class UStaticMeshComponent;
@@ -22,6 +20,7 @@ class UInputAction;
 class UAudioComponent;
 class USphereComponent;
 class UWidgetComponent;
+class UAIPerceptionStimuliSourceComponent;
 
 class ASword;
 class UHealthComponent;
@@ -256,4 +255,9 @@ protected:
 	UPROPERTY()
 	AMyFirstHUD* HUD;
 
+
+	//AI
+	class UAIPerceptionStimuliSourceComponent* StimulusSource;
+	
+	void SetupStimulusSource();
 };

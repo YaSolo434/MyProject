@@ -8,7 +8,7 @@
 
 UBTTask_FindRandomLocation::UBTTask_FindRandomLocation(FObjectInitializer const& ObjectInitializer)
 {
-    NodeName = "Find Random Location in NavMesh";
+    NodeName = TEXT("Find Random Location in NavMesh");
 }
 
 EBTNodeResult::Type UBTTask_FindRandomLocation::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
@@ -33,9 +33,6 @@ EBTNodeResult::Type UBTTask_FindRandomLocation::ExecuteTask(UBehaviorTreeCompone
                 {
                     OwnerComp.GetBlackboardComponent()->SetValueAsVector(GetSelectedBlackboardKey(), Location.Location);
                 }
-                
-                //if succeeded finish with success
-                FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
                 
                 return EBTNodeResult::Succeeded;
             }
