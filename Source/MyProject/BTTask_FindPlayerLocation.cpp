@@ -11,7 +11,7 @@
 
 UBTTask_FindPlayerLocation::UBTTask_FindPlayerLocation(FObjectInitializer const& ObjectInitializer)
 {
-	NodeName = TEXT("Find Character Location");
+	NodeName = TEXT("Find Player Location");
 }
 
 EBTNodeResult::Type UBTTask_FindPlayerLocation::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
