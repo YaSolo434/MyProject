@@ -12,6 +12,7 @@
 #include "Animation/AnimMontage.h"
 #include "Sword.h"
 #include "BehaviorTree/BehaviorTree.h"
+#include "PatrolPath.h"
 
 #include "Enemy.generated.h"
 
@@ -67,4 +68,10 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
 	UBehaviorTree* EnemyTree;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
+	APatrolPath* PatrolPath;
+	
+public:
+	APatrolPath* GetPatrolPath() const { return PatrolPath; }
 };
