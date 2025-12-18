@@ -57,6 +57,17 @@ void AEnemyAIController::OnTargetDetected(AActor* Actor, FAIStimulus const Stimu
 {
 	if (AMyFirstCharacter* const PlayerCharacter = Cast<AMyFirstCharacter>(Actor))
 	{
-		GetBlackboardComponent()->SetValueAsBool("CanSeePlayer", Stimulus.WasSuccessfullySensed());
+		const bool bSensed = Stimulus.WasSuccessfullySensed();
+
+		Blackboard->SetValueAsBool("CanSeePlayer", bSensed);
+
+		if (bSensed)
+		{
+			Blackboard->SetValueAsObject("TargetActor", PlayerCharacter);
+		}
+		else
+		{
+			Blackboard->ClearValue("TargetActor");
+		}
 	}
 }
