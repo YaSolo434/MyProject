@@ -11,6 +11,8 @@ AEnemy::AEnemy()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	GetCharacterMovement()->MaxWalkSpeed = IdleSpeed;
+
 	HealthComp = CreateDefaultSubobject<UHealthComponent>(TEXT("Health"));
 	HealthBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBarWidget"));
 	HealthBarWidget->SetupAttachment(RootComponent);
@@ -23,28 +25,33 @@ AEnemy::AEnemy()
 	SwordMesh->SetupAttachment(GetMesh(), FName("R_HandSocket"));
 }
 
-UBehaviorTree* AEnemy::GetBehaviourTree() const
+void AEnemy::SetCharacterSpeed(float Speed)
 {
-	return EnemyTree;
+	GetCharacterMovement()->MaxWalkSpeed = Speed;
+}
+
+float AEnemy::GetCharacterSpeed() const
+{
+	return GetCharacterMovement()->GetMaxSpeed();
 }
 
 
 void AEnemy::Die() {
 
-	//disabling movement and collision to prevent hapenin shitty things
+	// Disable movement and collision to prevent unintended behavior
 	GetCharacterMovement()->DisableMovement();
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-	//playing death anim
+	//play death anim
 	GetMesh()->PlayAnimation(DeathAnim, false);
 }
 
 void AEnemy::HitAnimation() {
 	
-	//getting Anim Insatnce
+	//get Anim Insatnce
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 
-	//playing anim
+	//play anim
 	AnimInstance->Montage_Play(HitReactMontage);
 }
 

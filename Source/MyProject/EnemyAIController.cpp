@@ -38,6 +38,7 @@ void AEnemyAIController::SetupPerceptionSystem()
 		SetPerceptionComponent(*CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("Perception Component")));
 		SightConfig->SightRadius = 500.f;
 		SightConfig->LoseSightRadius = SightConfig->SightRadius + 25.f;
+		SightConfig->NearClippingRadius = 34.f;
 		SightConfig->PeripheralVisionAngleDegrees = 90.f;
 		SightConfig->SetMaxAge(5.f);
 		SightConfig->AutoSuccessRangeFromLastSeenLocation = 520.f;
@@ -68,6 +69,13 @@ void AEnemyAIController::OnTargetDetected(AActor* Actor, FAIStimulus const Stimu
 		else
 		{
 			Blackboard->ClearValue("TargetActor");
+		}
+
+		if (AEnemy* Enemy = Cast<AEnemy>(GetPawn()))
+		{
+			const float NewSpeed = bSensed ? Enemy->ChaseSpeed : Enemy->IdleSpeed;
+
+			Enemy->SetCharacterSpeed(NewSpeed);
 		}
 	}
 }

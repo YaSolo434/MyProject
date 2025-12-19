@@ -33,8 +33,16 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	UBehaviorTree* GetBehaviourTree() const;
+	UBehaviorTree* GetBehaviourTree() const { return EnemyTree; };
 
+	void SetCharacterSpeed(float Speed);
+	float GetCharacterSpeed() const;
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float IdleSpeed = 200.f;
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float ChaseSpeed = 450.f;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
