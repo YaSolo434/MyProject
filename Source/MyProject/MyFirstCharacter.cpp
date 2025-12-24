@@ -62,7 +62,6 @@ void AMyFirstCharacter::BeginPlay() {
 
 	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
 	{
-		
 		if (PlayerController) {
 			UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
 			if (Subsystem && DefaultMappingContext) {
@@ -73,9 +72,11 @@ void AMyFirstCharacter::BeginPlay() {
 	
 	SpawnSword();
 
-	if (StaminaBarWidgetClass) {
+	if (StaminaBarWidgetClass) 
+	{
 		StaminaBarWidget = CreateWidget<UStaminaBar>(GetWorld(), StaminaBarWidgetClass);
-		if (StaminaBarWidget) {
+		if (StaminaBarWidget) 
+		{
 			StaminaBarWidget->AddToViewport();
 		}
 	}

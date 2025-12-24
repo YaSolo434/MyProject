@@ -35,6 +35,13 @@ float AEnemy::GetCharacterSpeed() const
 	return GetCharacterMovement()->GetMaxSpeed();
 }
 
+int AEnemy::MeleeAttack_Implementation()
+{
+	GetCharacterMovement()->StopActiveMovement();
+	PlayAnimMontage(SwingMontage);
+	
+	return 0;
+}
 
 void AEnemy::Die() {
 

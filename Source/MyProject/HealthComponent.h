@@ -15,8 +15,8 @@ UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class MYPROJECT_API UHealthComponent : public UActorComponent
 {
 	GENERATED_BODY()
-
-public:	
+	
+public:
 	// Sets default values for this component's properties
 	UHealthComponent();
 
@@ -25,21 +25,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	float CurrentHealth = 5.f;
-
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
-protected:
-	bool CanTakeDamage;
-
-	void AllowTakeDamage();
-
-public:
 	void TakeDamage(int Damage);
 
 	UPROPERTY(BlueprintAssignable, Category = "Events")
@@ -50,4 +35,10 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnHealthChangedSignature OnHealthChanged;
+
+protected:
+	bool CanTakeDamage;
+
+	void AllowTakeDamage();
+
 };

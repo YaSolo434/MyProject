@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CombatInterface.h"
 #include "GameFramework/Character.h"
 #include "HealthComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -19,7 +20,7 @@
 class UWidgetComponent;
 
 UCLASS()
-class MYPROJECT_API AEnemy : public ACharacter
+class MYPROJECT_API AEnemy : public ACharacter, public ICombatInterface
 {
 	GENERATED_BODY()
 
@@ -32,22 +33,28 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	UBehaviorTree* GetBehaviourTree() const { return EnemyTree; };
-
+	
 	void SetCharacterSpeed(float Speed);
-	float GetCharacterSpeed() const;
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float IdleSpeed = 200.f;
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float ChaseSpeed = 450.f;
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	
+	APatrolPath* GetPatrolPath() const { return PatrolPath; }
+	
+	UBehaviorTree* GetBehaviourTree() const { return EnemyTree; }
+	
+	UAnimMontage* GetAttackMontage() const {return SwingMontage;}
+	
+	float GetCharacterSpeed() const;
+	
+	int MeleeAttack_Implementation() override;
 
 protected:
+	
+	virtual void BeginPlay() override;
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* SwordMesh;
 
@@ -82,7 +89,4 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
 	APatrolPath* PatrolPath;
-	
-public:
-	APatrolPath* GetPatrolPath() const { return PatrolPath; }
 };

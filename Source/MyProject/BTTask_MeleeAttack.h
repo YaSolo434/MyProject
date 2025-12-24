@@ -6,12 +6,17 @@
 #include "BehaviorTree/Tasks/BTTask_BlackboardBase.h"
 #include "BTTask_MeleeAttack.generated.h"
 
-/**
- * 
- */
+class AEnemy;
+
 UCLASS()
 class MYPROJECT_API UBTTask_MeleeAttack : public UBTTask_BlackboardBase
 {
 	GENERATED_BODY()
 	
+public:
+	UBTTask_MeleeAttack();
+	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
+	
+private:
+	bool MontageFinished(AEnemy* const Enemy);	
 };
