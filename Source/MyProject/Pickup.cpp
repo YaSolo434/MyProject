@@ -112,6 +112,7 @@ void APickup::TakePickup(const AMyFirstCharacter* Taker) {
 	}
 }
 
+#if WITH_EDITOR
 void APickup::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 
@@ -128,7 +129,7 @@ void APickup::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent
 		}
 	}
 }
-
+#endif
 
 // Called when the game starts or when spawned
 void APickup::BeginPlay()

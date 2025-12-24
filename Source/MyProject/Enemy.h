@@ -59,7 +59,10 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 	UAnimMontage* HitReactMontage;
-
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
+	UAnimMontage* SwingMontage;
+	
 	bool AlreadyDied = false;
 
 	UFUNCTION()

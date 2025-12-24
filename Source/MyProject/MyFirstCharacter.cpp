@@ -4,10 +4,8 @@
 #include "MyFirstCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Components/AudioComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "Components/SphereComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundBase.h"
@@ -20,7 +18,6 @@
 #include "TimerManager.h"
 #include "Engine/World.h"
 #include "Grass.h"
-#include "Components/WidgetComponent.h"
 #include "StaminaBar.h"
 #include "MyFirstHUD.h"
 #include "InventoryComponent.h"
@@ -63,11 +60,14 @@ AMyFirstCharacter::AMyFirstCharacter() {
 void AMyFirstCharacter::BeginPlay() {
 	Super::BeginPlay();
 
-	APlayerController* PlayerController = Cast<APlayerController>(GetController());
-	if (PlayerController) {
-		UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
-		if (Subsystem && DefaultMappingContext) {
-			Subsystem->AddMappingContext(DefaultMappingContext, 0);
+	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
+	{
+		
+		if (PlayerController) {
+			UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
+			if (Subsystem && DefaultMappingContext) {
+				Subsystem->AddMappingContext(DefaultMappingContext, 0);
+			}
 		}
 	}
 	
@@ -85,7 +85,7 @@ void AMyFirstCharacter::BeginPlay() {
 	//limit the camera
 	APlayerCameraManager* const PlayerCameraManager = GetWorld()->GetFirstPlayerController()->PlayerCameraManager;
 	PlayerCameraManager->ViewPitchMin = -50.f;
-	PlayerCameraManager->ViewPitchMax = 10.f;
+	PlayerCameraManager->ViewPitchMax = 20.f;
 }
 
 // Called every frame
@@ -105,7 +105,7 @@ void AMyFirstCharacter::Tick(float DeltaTime) {
 
 	SprintAdj(DeltaTime);
 
-	// when the camera gets too close to the player it will make player mesh invinsible
+	// when the camera gets too close to the player it will make player mesh invincible
 	if (FVector::Dist(Camera->GetComponentLocation(), GetMesh()->GetComponentLocation()) < 50.f) {
 		GetMesh()->SetVisibility(false, true);
 	}
@@ -143,7 +143,7 @@ void AMyFirstCharacter::StopMoveForward(const FInputActionValue& Value) {
 //MoveRight
 void AMyFirstCharacter::MoveRight(const FInputActionValue& Value) {	
 	if (!IsLanding) {
-		float AxisValue = Value.Get<float>();
+		float AxisValue = -Value.Get<float>();
 		if (Controller && AxisValue != 0.f) {
 			const FRotator CameraRotation = Controller->GetControlRotation();
 			const FRotator YawCameraRotation = FRotator(0.f, CameraRotation.Yaw, 0.f);
@@ -323,7 +323,7 @@ USoundBase* AMyFirstCharacter::GetRandomWalkingSound() const {
 	return nullptr;
 }
 
-void AMyFirstCharacter::UpdateStaminaBar() {
+void AMyFirstCharacter::UpdateStaminaBar() const {
 	if (StaminaBarWidget) {
 		StaminaBarWidget->SetStaminaPrecent(CurSprintTime / MaxSprintTime);
 	}

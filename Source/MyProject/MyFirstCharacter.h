@@ -221,7 +221,7 @@ protected:
 	UStaminaBar* StaminaBarWidget;
 
 	UFUNCTION()
-	void UpdateStaminaBar();
+	void UpdateStaminaBar() const;
 
 
 

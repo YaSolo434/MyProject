@@ -21,7 +21,7 @@ public:
 
 	void InitializeDrop(UItemBase* ItemtoDrop, const int32 InQuantity);
 
-	FORCEINLINE UItemBase* GetItemData() { return ItemReference; };
+	FORCEINLINE UItemBase* GetItemData() const { return ItemReference; };
 
 	virtual void BeginFocus() override;
 	virtual void EndFocus() override;
@@ -39,7 +39,7 @@ protected:
 
 #if WITH_EDITOR
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
-
+	
 #endif // WITH_EDITOR
 
 
