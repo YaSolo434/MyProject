@@ -46,9 +46,11 @@ int AEnemy::MeleeAttack_Implementation()
 
 void AEnemy::Die() {
 
+	if (bIsDead){return;}
+	
 	bIsDead = true;
 	
-	// when a npc dies its brain has to die with it
+	// Stop AI behavior and unpossess controller
 	if (AEnemyAIController* EnemyController = Cast<AEnemyAIController>(GetController()))
 	{
 		if (EnemyController->BrainComponent)
@@ -58,6 +60,7 @@ void AEnemy::Die() {
 	}
 	
 	// Disable movement
+	GetCharacterMovement()->StopMovementImmediately();
 	GetCharacterMovement()->DisableMovement();
 	
 	// Disable visibility signal
@@ -70,8 +73,13 @@ void AEnemy::Die() {
 	// Disable collision to prevent unintended behavior
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	
+	// Hide health bar
+	HealthBarWidget->SetVisibility(false);
+	
 	//play death anim
 	GetMesh()->PlayAnimation(DeathAnim, false);
+	
+	SetLifeSpan(5.f);
 }
 
 void AEnemy::HitAnimation() {

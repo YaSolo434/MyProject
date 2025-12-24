@@ -10,16 +10,7 @@
   <component name="ChangeListManager">
     <list default="true" id="5ce4939b-d64d-42f3-91e1-9be372f5b6d9" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.MyProject/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MyProject/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/BP_Classes/Enemies/BadSageFolder/BT_Enemy.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/BP_Classes/Enemies/BadSageFolder/BT_Enemy.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/BP_Classes/Enemies/BadSageFolder/BadSage.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/BP_Classes/Enemies/BadSageFolder/BadSage.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Levels/NewMap.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Levels/NewMap.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MyProject/BTTask_MeleeAttack.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MyProject/BTTask_MeleeAttack.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MyProject/BTTask_MeleeAttack.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MyProject/BTTask_MeleeAttack.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/MyProject/Enemy.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MyProject/Enemy.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MyProject/Enemy.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MyProject/Enemy.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MyProject/HealthComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MyProject/HealthComponent.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MyProject/HealthComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MyProject/HealthComponent.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MyProject/MyFirstCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MyProject/MyFirstCharacter.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,7 +73,7 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.toDoOptions&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -131,7 +122,8 @@
       <updated>1766572750394</updated>
       <workItem from="1766572755745" duration="5407000" />
       <workItem from="1766586322436" duration="338000" />
-      <workItem from="1766586697300" duration="7637000" />
+      <workItem from="1766586697300" duration="13845000" />
+      <workItem from="1766600822468" duration="532000" />
     </task>
     <servers />
   </component>
@@ -142,6 +134,8 @@
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+    <MESSAGE value="Add melee AI services and update character logic&#10;&#10;Introduced BTService_IsPlayerInMeleeRange and BTTask_MeleeAttack for AI melee behavior. Updated Enemy and Pickup classes to support new animation and const-correctness. Adjusted MyFirstCharacter movement, camera pitch, and stamina bar logic. Removed unused includes and deleted an obsolete animation asset." />
+    <option name="LAST_COMMIT_MESSAGE" value="" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -160,5 +154,17 @@
         </breakpoint>
       </breakpoints>
     </breakpoint-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+  <component name="github-copilot-workspace">
+    <instructionFileLocations>
+      <option value=".github/instructions" />
+    </instructionFileLocations>
+    <promptFileLocations>
+      <option value=".github/prompts" />
+    </promptFileLocations>
   </component>
 </project>
