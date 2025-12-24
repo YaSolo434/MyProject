@@ -25,6 +25,10 @@ EBTNodeResult::Type UBTTask_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& Own
 	AAIController const* const Controller = OwnerComp.GetAIOwner();
 	AEnemy* const Enemy = Cast<AEnemy>(Controller->GetPawn());
 	
+	if (!Enemy || Enemy->IsDead())
+	{
+		return EBTNodeResult::Failed;
+	}
 	//check if it implements attackInterface
 	if (ICombatInterface* const CombatInterface = Cast<ICombatInterface>(Enemy))
 	{
@@ -35,7 +39,7 @@ EBTNodeResult::Type UBTTask_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& Own
 		}
 	}
 	
-	return EBTNodeResult::Succeeded;
+	return EBTNodeResult::Failed;
 }
 
 bool UBTTask_MeleeAttack::MontageFinished(AEnemy* const Enemy)

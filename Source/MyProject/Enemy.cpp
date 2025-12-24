@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Enemy.h"
+
+#include "EnemyAIController.h"
 #include "HealthBar.h"
 #include "Components/WidgetComponent.h"
 
@@ -19,7 +21,6 @@ AEnemy::AEnemy()
 	HealthBarWidget->SetWidgetSpace(EWidgetSpace::World);
 	HealthBarWidget->SetDrawSize(FVector2D(100.f, 10.f));
 	HealthBarWidget->SetRelativeLocation(FVector(0.f, 0.f, 120.f));
-
 
 	SwordMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Sword"));
 	SwordMesh->SetupAttachment(GetMesh(), FName("R_HandSocket"));
@@ -45,21 +46,43 @@ int AEnemy::MeleeAttack_Implementation()
 
 void AEnemy::Die() {
 
-	// Disable movement and collision to prevent unintended behavior
+	bIsDead = true;
+	
+	// when a npc dies its brain has to die with it
+	if (AEnemyAIController* EnemyController = Cast<AEnemyAIController>(GetController()))
+	{
+		if (EnemyController->BrainComponent)
+		{
+			EnemyController->BrainComponent->StopLogic(TEXT("Enemy Dead"));
+		}
+	}
+	
+	// Disable movement
 	GetCharacterMovement()->DisableMovement();
+	
+	// Disable visibility signal
+	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
+	
+	if (UAnimInstance* AnimIns = GetMesh()->GetAnimInstance())
+	{
+		AnimIns->StopAllMontages(0.1f);
+	}
+	// Disable collision to prevent unintended behavior
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
+	
 	//play death anim
 	GetMesh()->PlayAnimation(DeathAnim, false);
 }
 
 void AEnemy::HitAnimation() {
-	
-	//get Anim Insatnce
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (!bIsDead)
+	{
+		//get Anim Insatnce
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 
-	//play anim
-	AnimInstance->Montage_Play(HitReactMontage);
+		//play anim
+		AnimInstance->Montage_Play(HitReactMontage);
+	}
 }
 
 void AEnemy::UpdateHealthBar(float CurrentHealth, float MaxHealth) {

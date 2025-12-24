@@ -4,10 +4,15 @@
 #include "MyFirstHUD.h"
 #include "MainMenu.h"
 #include "InteractionWidget.h"
+#include "HealthBar.h"
+#include "Components/CanvasPanelSlot.h"
+#include "Components/PanelSlot.h"
+#include "Components/ProgressBar.h"
+#include "Components/WidgetComponent.h"
 
-AMyFirstHUD::AMyFirstHUD() {
+AMyFirstHUD::AMyFirstHUD() 
+{
 
-	
 }
 
 void AMyFirstHUD::DisplayMenu() {
@@ -79,15 +84,34 @@ void AMyFirstHUD::BeginPlay() {
 
 	Super::BeginPlay();
 
-	if (MainMenuClass) {
+	if (MainMenuClass) 
+	{
 		MainMenu = CreateWidget<UMainMenu>(GetWorld(), MainMenuClass);
 		MainMenu->AddToViewport(5);
 		MainMenu->SetVisibility(ESlateVisibility::Collapsed);
 	}
 
-	if (InteractionWidgetClass) {
+	if (InteractionWidgetClass) 
+	{
 		InteractionWidget = CreateWidget<UInteractionWidget>(GetWorld(), InteractionWidgetClass);
 		InteractionWidget->AddToViewport(-1);
 		InteractionWidget->SetVisibility(ESlateVisibility::Collapsed);
 	}
+	
+	if (HealthBarClass)
+	{
+		HealthBarWidget = CreateWidget<UHealthBar>(GetWorld(), HealthBarClass);
+		HealthBarWidget->AddToViewport(-1);
+		HealthBarWidget->SetVisibility(ESlateVisibility::Visible);
+		
+		if (UProgressBar const* const ProgressBar = Cast<UProgressBar>(HealthBarWidget->GetWidgetFromName("HealthProgressBar")))
+		{
+			if (UCanvasPanelSlot* CanvasSlot = Cast<UCanvasPanelSlot>(ProgressBar->Slot))
+			{
+				CanvasSlot->SetPosition(FVector2D(1460.f, 80.f));
+				CanvasSlot->SetSize(FVector2D(350.f, 65.f));
+				CanvasSlot->SetAnchors(FAnchors(0.f, 0.f));
+			}
+		}
+	}	
 }

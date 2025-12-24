@@ -8,6 +8,7 @@
 
 class UMainMenu;
 class UInteractionWidget;
+class UHealthBar;
 
 struct FInteractableData;
 
@@ -28,6 +29,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<UInteractionWidget> InteractionWidgetClass;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+	TSubclassOf<UHealthBar> HealthBarClass;
 
 	bool IsMenuVisible;
 
@@ -53,6 +57,9 @@ protected:
 
 	UPROPERTY()
 	UInteractionWidget* InteractionWidget;
+	
+	UPROPERTY()
+	UHealthBar* HealthBarWidget;
 
 	//=================================================================================================
 	// FUNCTIONS

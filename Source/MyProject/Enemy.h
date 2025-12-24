@@ -51,6 +51,8 @@ public:
 	float GetCharacterSpeed() const;
 	
 	int MeleeAttack_Implementation() override;
+	
+	bool IsDead() const { return bIsDead; }
 
 protected:
 	
@@ -74,6 +76,8 @@ protected:
 
 	UFUNCTION()
 	void Die();
+	
+	bool bIsDead = false;
 
 	UFUNCTION()
 	void HitAnimation();
