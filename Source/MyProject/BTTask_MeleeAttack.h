@@ -18,5 +18,5 @@ public:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 	
 private:
-	bool MontageFinished(AEnemy* const Enemy);	
+	bool MontageFinished(AEnemy* const Enemy);
 };

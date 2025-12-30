@@ -10,7 +10,22 @@
   <component name="ChangeListManager">
     <list default="true" id="5ce4939b-d64d-42f3-91e1-9be372f5b6d9" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.MyProject/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MyProject/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/BP_Classes/Animations/Sage/ABP_Sage.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/BP_Classes/Animations/Sage/ABP_Sage.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/BP_Classes/Animations/Sage/AnimNotifies/AttackEnd.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/BP_Classes/Animations/Sage/AnimNotifies/AttackEnd.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/BP_Classes/Animations/Sage/Attack_Montage.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/BP_Classes/Animations/Sage/Attack_Montage.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/BP_Classes/Enemies/BadSageFolder/BT_Enemy.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/BP_Classes/Enemies/BadSageFolder/BT_Enemy.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/BP_Classes/Enemies/BadSageFolder/BadSage.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/BP_Classes/Enemies/BadSageFolder/BadSage.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Levels/NewMap.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Levels/NewMap.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MyProject/BTService_IsPlayerInMeleeRange.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MyProject/BTService_IsPlayerInMeleeRange.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MyProject/BTTask_MeleeAttack.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MyProject/BTTask_MeleeAttack.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MyProject/BTTask_MeleeAttack.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MyProject/BTTask_MeleeAttack.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MyProject/CombatInterface.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MyProject/CombatInterface.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MyProject/CombatInterface.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MyProject/CombatInterface.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/MyProject/Enemy.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MyProject/Enemy.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MyProject/Enemy.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MyProject/Enemy.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MyProject/Grass.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MyProject/Grass.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MyProject/MyFirstCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MyProject/MyFirstCharacter.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,8 +52,14 @@
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.6/Engine/Source/Runtime/AIModule/Classes/Perception/AISenseConfig_Sight.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.6/Engine/Source/Runtime/Engine/Classes/GameFramework/Character.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.6/Engine/Source/Runtime/Engine/Classes/GameFramework/CharacterMovementComponent.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.6/Engine/Source/Runtime/Engine/Classes/GameFramework/NavMovementComponent.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/MyProject/CombatInterface.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/MyProject/CombatInterface.h" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="JsbtTreeLayoutManager">
+    <layout place="tools.popupGrunt">
+      <scroll-view-position x="0" y="0" />
+    </layout>
   </component>
   <component name="McpProjectServerCommands">
     <commands />
@@ -46,13 +67,16 @@
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="Toolset" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 3
 }</component>
   <component name="ProjectId" id="37HvKRUQDQPVyBL8E8Vhx3syLQX" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -73,7 +97,7 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -123,7 +147,13 @@
       <workItem from="1766572755745" duration="5407000" />
       <workItem from="1766586322436" duration="338000" />
       <workItem from="1766586697300" duration="13845000" />
-      <workItem from="1766600822468" duration="532000" />
+      <workItem from="1766600822468" duration="816000" />
+      <workItem from="1766658698762" duration="473000" />
+      <workItem from="1766680465187" duration="9262000" />
+      <workItem from="1766689776459" duration="6785000" />
+      <workItem from="1766854028335" duration="3294000" />
+      <workItem from="1766990749758" duration="6151000" />
+      <workItem from="1767111640238" duration="8943000" />
     </task>
     <servers />
   </component>

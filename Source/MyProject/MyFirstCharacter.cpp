@@ -18,6 +18,7 @@
 #include "TimerManager.h"
 #include "Engine/World.h"
 #include "Grass.h"
+#include "DamageableInterface.h"
 #include "StaminaBar.h"
 #include "MyFirstHUD.h"
 #include "InventoryComponent.h"
@@ -102,18 +103,9 @@ void AMyFirstCharacter::Tick(float DeltaTime) {
 
 	bool bIsMoving = HorizontalVelocity.SizeSquared() > KINDA_SMALL_NUMBER;
 	GetCharacterMovement()->bOrientRotationToMovement = bIsMoving;
-
-
+	
 	SprintAdj(DeltaTime);
-
-	// when the camera gets too close to the player it will make player mesh invincible
-	if (FVector::Dist(Camera->GetComponentLocation(), GetMesh()->GetComponentLocation()) < 50.f) {
-		GetMesh()->SetVisibility(false, true);
-	}
-	else {
-		GetMesh()->SetVisibility(true, true);
-	}
-
+	
 	//check trace line shooting frequency
 	if (GetWorld()->TimeSince(InteractionData.LastInteractionCheckTime) > InteractionCheckFrequency) {
 		PerformInteractionCheck();
@@ -200,8 +192,6 @@ void AMyFirstCharacter::SprintAdj(float DeltaTime)
 		UpdateStaminaBar();
 	}
 	UpdateStaminaBar();
-
-
 }
 
 void AMyFirstCharacter::Jump() {
@@ -366,29 +356,39 @@ void AMyFirstCharacter::LineTrace() {
 	GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility, TraceParams);
 	//DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 1.0f, 0, 2.0f);
 	if (!HitResult.GetActor()) { return; }
+	
 	//Get HitActor that gets hit by sword
 	if (HitResult.bBlockingHit) {
 		UE_LOG(LogTemp, Warning, TEXT("Hit actor: %s"), *HitResult.GetActor()->GetName());
+		
+		//Get actor that was hit
 		AActor* ActorHit = HitResult.GetActor();
-		UHealthComponent* EnemyHit = ActorHit->FindComponentByClass<UHealthComponent>();
-
-		if (EnemyHit) {
-			UE_LOG(LogTemp, Warning, TEXT("Health component found! Applying damage."));
-			EnemyHit->TakeDamage(Damage);
-
-			if (ActorHit->IsA(AGrass::StaticClass())) {
-				if (SwordHitSound && !HasPlayedHitSound) {
-					UGameplayStatics::PlaySoundAtLocation(ActorHit, SwordHitSound, HitResult.Location);
-
-					HasPlayedHitSound = true;
+		
+		//Apply damage if actor implements damageable interface
+		if (ActorHit && ActorHit->GetClass()->ImplementsInterface(UDamageableInterface::StaticClass())) 
+		{
+			if (IDamageableInterface* Damageable = Cast<IDamageableInterface>(ActorHit))
+			{
+				if (Damage > 0.f && Damageable->IsDamageable())
+				{
+					Damageable->ApplyDamage(ActorHit, Damage);
 				}
 			}
 		}
-		else {
-			UE_LOG(LogTemp, Warning, TEXT("No health component found on hit actor."));
+		
+		//Play sound if actor is grass
+		if (ActorHit->IsA(AGrass::StaticClass())) 
+		{
+			if (SwordHitSound && !HasPlayedHitSound) 
+			{
+				UGameplayStatics::PlaySoundAtLocation(ActorHit, SwordHitSound, HitResult.Location);
+
+				HasPlayedHitSound = true;
+			}
 		}
 	}
 }
+
 
 
 void AMyFirstCharacter::PerformInteractionCheck() {
@@ -582,4 +582,4 @@ void AMyFirstCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 		
 		Input->BindAction(ToggleMenuAction, ETriggerEvent::Started, this, &AMyFirstCharacter::ToggleMenu);
 	}
-}	
+}

@@ -2,6 +2,7 @@
 
 #include "Enemy.h"
 
+#include "BTTask_MeleeAttack.h"
 #include "EnemyAIController.h"
 #include "HealthBar.h"
 #include "Components/WidgetComponent.h"
@@ -24,6 +25,11 @@ AEnemy::AEnemy()
 
 	SwordMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Sword"));
 	SwordMesh->SetupAttachment(GetMesh(), FName("R_HandSocket"));
+	
+	AttackBox = CreateDefaultSubobject<UBoxComponent>("Attack Box");
+	AttackBox->SetupAttachment(GetMesh(), FName("R_HandSocket"));
+	
+	bIsDead = false;
 }
 
 void AEnemy::SetCharacterSpeed(float Speed)
@@ -36,12 +42,53 @@ float AEnemy::GetCharacterSpeed() const
 	return GetCharacterMovement()->GetMaxSpeed();
 }
 
-int AEnemy::MeleeAttack_Implementation()
+int32 AEnemy::MeleeAttack()
 {
-	GetCharacterMovement()->StopActiveMovement();
-	PlayAnimMontage(SwingMontage);
+	UE_LOG(LogTemp, Warning, TEXT("MeleeAttack_Implementation CALLED"));
 	
-	return 0;
+	if (SwingMontage)
+	{
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		
+		AnimInstance->Montage_Play(SwingMontage);
+	}
+	return 0;	
+}
+
+void AEnemy::ApplyDamage(AActor* DamagedActor, float const DamageAmount)
+{
+	if (DamagedActor && DamageAmount > 0.f)
+	{
+		IDamageableInterface* Damageable = Cast<IDamageableInterface>(DamagedActor);
+		
+		if (Damageable && Damageable->IsDamageable())
+		{
+			Damageable->ReceiveDamage(this, DamageAmount);
+		}
+	}
+}
+
+bool AEnemy::IsDamageable() const
+{
+	return !bIsDead;
+}
+
+bool AEnemy::IsActorDead(AActor* Actor) const
+{
+	return bIsDead;
+}
+
+void AEnemy::ReceiveDamage(AActor* DamageCauser, float const DamageAmount)
+{
+	if (HealthComp && DamageCauser && DamageAmount > 0.f)
+	{
+		HealthComp->TakeDamage(DamageAmount);
+	}
+}
+
+UHealthComponent* AEnemy::GetHealthComponent() const
+{
+	return HealthComp;
 }
 
 void AEnemy::Die() {
@@ -100,6 +147,7 @@ void AEnemy::UpdateHealthBar(float CurrentHealth, float MaxHealth) {
 		}
 	}
 }
+
 // Called when the game starts or when spawned
 void AEnemy::BeginPlay()
 {
@@ -108,6 +156,8 @@ void AEnemy::BeginPlay()
 	HealthComp->OnDeath.AddDynamic(this, &AEnemy::Die);
 	HealthComp->OnDamaged.AddDynamic(this, &AEnemy::HitAnimation);
 	HealthComp->OnHealthChanged.AddDynamic(this, &AEnemy::UpdateHealthBar);
+	
+	// PlayAnimMontage(SwingMontage);
 }
 
 // Called every frame

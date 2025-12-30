@@ -52,3 +52,4 @@ protected:
 	UFUNCTION()
 	void Kill();
 };
+

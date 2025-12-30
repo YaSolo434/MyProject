@@ -1,11 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "CombatInterface.h"
 #include "GameFramework/Character.h"
 #include "HealthComponent.h"
+#include "DamageableInterface.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Animation/AnimationAsset.h"
@@ -14,13 +13,14 @@
 #include "Sword.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "PatrolPath.h"
+#include "Components/BoxComponent.h"
 
 #include "Enemy.generated.h"
 
 class UWidgetComponent;
 
 UCLASS()
-class MYPROJECT_API AEnemy : public ACharacter, public ICombatInterface
+class MYPROJECT_API AEnemy : public ACharacter, public ICombatInterface, public IDamageableInterface
 {
 	GENERATED_BODY()
 
@@ -50,9 +50,19 @@ public:
 	
 	float GetCharacterSpeed() const;
 	
-	int MeleeAttack_Implementation() override;
+	virtual int32 MeleeAttack() override;
 	
 	bool IsDead() const { return bIsDead; }
+	
+	virtual void ApplyDamage(AActor* DamagedActor, float DamageAmount) override;
+	
+	virtual bool IsDamageable() const override;
+	
+	virtual bool IsActorDead(AActor* Actor) const override;
+	
+	virtual void ReceiveDamage(AActor* DamageCauser, float DamageAmount) override;
+	
+	virtual UHealthComponent* GetHealthComponent() const override;
 
 protected:
 	
@@ -72,7 +82,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 	UAnimMontage* SwingMontage;
 	
-	bool AlreadyDied = false;
+	UPROPERTY(EditAnywhere, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	UBoxComponent* AttackBox;
+	
 
 	UFUNCTION()
 	void Die();

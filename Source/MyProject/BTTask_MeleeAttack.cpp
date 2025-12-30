@@ -12,37 +12,52 @@ UBTTask_MeleeAttack::UBTTask_MeleeAttack()
 	NodeName = "Melee Attack";
 }
 
-EBTNodeResult::Type UBTTask_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTask_MeleeAttack::ExecuteTask(
+	UBehaviorTreeComponent& OwnerComp,
+	uint8* NodeMemory)
 {
-	// if we are out of range then finish the task
-	if (bool const OutOfRange = !OwnerComp.GetBlackboardComponent()->GetValueAsBool(GetSelectedBlackboardKey()))
-	{
-		//finish the task
-		return EBTNodeResult::Succeeded;
-	};
+	UBlackboardComponent* BB = OwnerComp.GetBlackboardComponent();
 	
-	// get ai and its controller
-	AAIController const* const Controller = OwnerComp.GetAIOwner();
-	AEnemy* const Enemy = Cast<AEnemy>(Controller->GetPawn());
-	
+	AAIController* Controller = OwnerComp.GetAIOwner();
+	AEnemy* Enemy = Cast<AEnemy>(Controller->GetPawn());
+
 	if (!Enemy || Enemy->IsDead())
 	{
 		return EBTNodeResult::Failed;
 	}
-	//check if it implements attackInterface
-	if (ICombatInterface* const CombatInterface = Cast<ICombatInterface>(Enemy))
+
+	UAnimInstance* AnimInstance = Enemy->GetMesh()->GetAnimInstance();
+	if (!AnimInstance)
 	{
-		//check if it already is playing
-		if (MontageFinished(Enemy))
+		return EBTNodeResult::Failed;
+	}
+	
+	if (Enemy->GetClass()->ImplementsInterface(UCombatInterface::StaticClass()))
+	{
+		if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(Enemy))
 		{
-			CombatInterface->Execute_MeleeAttack(Enemy);
+			CombatInterface->MeleeAttack();
+			Enemy->GetCharacterMovement()->SetMovementMode(MOVE_None);
+			
+			FOnMontageBlendingOutStarted BlendingOutStarted;
+			BlendingOutStarted.BindLambda([this, &OwnerComp, BB, Enemy](UAnimMontage* Montage, bool const bInterrupted = false)
+			{
+				if (!BB->GetValueAsBool(GetSelectedBlackboardKey()))
+				{
+					Enemy->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+					FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+				}
+				else
+				{
+					Enemy->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+					FinishLatentTask(OwnerComp, bInterrupted ? EBTNodeResult::Failed : EBTNodeResult::Succeeded);
+				}
+			});
+			
+			AnimInstance->Montage_SetBlendingOutDelegate(BlendingOutStarted, Enemy->GetAttackMontage());
 		}
 	}
 	
-	return EBTNodeResult::Failed;
+	return EBTNodeResult::InProgress;
 }
 
-bool UBTTask_MeleeAttack::MontageFinished(AEnemy* const Enemy)
-{
-	return Enemy->GetMesh()->GetAnimInstance()->Montage_GetIsStopped(Enemy->GetAttackMontage());
-}
