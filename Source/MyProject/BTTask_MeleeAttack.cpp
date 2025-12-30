@@ -10,54 +10,95 @@
 UBTTask_MeleeAttack::UBTTask_MeleeAttack()
 {
 	NodeName = "Melee Attack";
+	
+	bNotifyTick = false;
+	bCreateNodeInstance = false;
 }
 
-EBTNodeResult::Type UBTTask_MeleeAttack::ExecuteTask(
-	UBehaviorTreeComponent& OwnerComp,
-	uint8* NodeMemory)
+EBTNodeResult::Type UBTTask_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	UBlackboardComponent* BB = OwnerComp.GetBlackboardComponent();
+	auto* Memory = (FMeleeTaskMemory*)NodeMemory;
+	Memory->bIsFinished = false;
+	Memory->OwnerComp = &OwnerComp;
 	
 	AAIController* Controller = OwnerComp.GetAIOwner();
-	AEnemy* Enemy = Cast<AEnemy>(Controller->GetPawn());
-
+	AEnemy* Enemy = Controller ? Cast<AEnemy>(Controller->GetPawn()) : nullptr;
 	if (!Enemy || Enemy->IsDead())
 	{
 		return EBTNodeResult::Failed;
 	}
-
-	UAnimInstance* AnimInstance = Enemy->GetMesh()->GetAnimInstance();
+	
+	UAnimInstance* AnimInstance = Enemy->GetMesh() ? Enemy->GetMesh()->GetAnimInstance() : nullptr;
 	if (!AnimInstance)
 	{
 		return EBTNodeResult::Failed;
 	}
 	
-	if (Enemy->GetClass()->ImplementsInterface(UCombatInterface::StaticClass()))
+	if (!Enemy->GetClass()->ImplementsInterface(UCombatInterface::StaticClass()))
 	{
-		if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(Enemy))
-		{
-			CombatInterface->MeleeAttack();
-			Enemy->GetCharacterMovement()->SetMovementMode(MOVE_None);
-			
-			FOnMontageBlendingOutStarted BlendingOutStarted;
-			BlendingOutStarted.BindLambda([this, &OwnerComp, BB, Enemy](UAnimMontage* Montage, bool const bInterrupted = false)
-			{
-				if (!BB->GetValueAsBool(GetSelectedBlackboardKey()))
-				{
-					Enemy->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
-					FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-				}
-				else
-				{
-					Enemy->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
-					FinishLatentTask(OwnerComp, bInterrupted ? EBTNodeResult::Failed : EBTNodeResult::Succeeded);
-				}
-			});
-			
-			AnimInstance->Montage_SetBlendingOutDelegate(BlendingOutStarted, Enemy->GetAttackMontage());
-		}
+		return EBTNodeResult::Failed;
 	}
+	
+	Memory->Enemy = Enemy;
+	Memory->AnimInstance = AnimInstance;
+	
+	ICombatInterface* Combat = Cast<ICombatInterface>(Enemy);
+	Combat->MeleeAttack();
+	
+	Enemy->GetCharacterMovement()->SetMovementMode(MOVE_None);
+	
+	UAnimMontage* AttackMontage = Enemy->GetAttackMontage();
+	if (!AttackMontage)
+	{
+		return EBTNodeResult::Failed;
+	}
+	
+	FOnMontageEnded Ended;
+	Ended.BindUObject(this, &UBTTask_MeleeAttack::OnMontageEnded, NodeMemory);
+	AnimInstance->Montage_SetEndDelegate(Ended, AttackMontage);
 	
 	return EBTNodeResult::InProgress;
 }
+
+void UBTTask_MeleeAttack::OnMontageEnded(UAnimMontage* Montage, bool bInterrupted, uint8* NodeMemory)
+{
+	auto* Memory = (FMeleeTaskMemory*)NodeMemory;
+	if (Memory->bIsFinished) {return;}
+	
+	Memory->bIsFinished = true;
+	
+	UBehaviorTreeComponent* BTC = Memory->OwnerComp.Get();
+	AEnemy* Enemy = Memory->Enemy.Get();
+	if (!BTC || !Enemy) {return;}
+	
+	Enemy->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+	
+	UBlackboardComponent* BB = BTC->GetBlackboardComponent();
+	
+	FinishLatentTask(*BTC, (!bInterrupted) ? EBTNodeResult::Succeeded : EBTNodeResult::Failed);
+}
+
+EBTNodeResult::Type UBTTask_MeleeAttack::AbortTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+{
+	auto* Memory = (FMeleeTaskMemory*)NodeMemory;
+	if (Memory->bIsFinished) {return EBTNodeResult::Aborted;}
+	
+	Memory->bIsFinished = true;
+	
+	if (AEnemy* Enemy = Memory->Enemy.Get())
+	{
+		Enemy->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+		
+		if (UAnimInstance* AnimInstance = Memory->AnimInstance.Get())
+		{
+			if (UAnimMontage* AttackMontage = Enemy->GetAttackMontage())
+			{
+				AnimInstance->Montage_Stop(0.1f, AttackMontage);
+			}
+		}
+	}
+	
+	return EBTNodeResult::Aborted;
+}
+
 

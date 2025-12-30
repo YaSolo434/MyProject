@@ -8,6 +8,19 @@
 
 class AEnemy;
 
+USTRUCT()
+struct FMeleeTaskMemory
+{
+	GENERATED_USTRUCT_BODY()
+	
+	TWeakObjectPtr<UAnimInstance> AnimInstance;
+	TWeakObjectPtr<AEnemy> Enemy;
+	TWeakObjectPtr<UBehaviorTreeComponent> OwnerComp;
+	
+	bool bIsFinished = false;
+};
+
+
 UCLASS()
 class MYPROJECT_API UBTTask_MeleeAttack : public UBTTask_BlackboardBase
 {
@@ -16,7 +29,9 @@ class MYPROJECT_API UBTTask_MeleeAttack : public UBTTask_BlackboardBase
 public:
 	UBTTask_MeleeAttack();
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
-	
+	virtual EBTNodeResult::Type AbortTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
+	virtual uint16 GetInstanceMemorySize() const override {return sizeof(FMeleeTaskMemory); }
+
 private:
-	bool MontageFinished(AEnemy* const Enemy);
+	void OnMontageEnded(UAnimMontage* Montage, bool bInterrupted, uint8* NodeMemory);
 };
