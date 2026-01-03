@@ -10,6 +10,7 @@
   <component name="ChangeListManager">
     <list default="true" id="5ce4939b-d64d-42f3-91e1-9be372f5b6d9" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.MyProject/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MyProject/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -139,6 +140,8 @@
       <workItem from="1766990749758" duration="6151000" />
       <workItem from="1767111640238" duration="12693000" />
       <workItem from="1767183669955" duration="356000" />
+      <workItem from="1767443717598" duration="276000" />
+      <workItem from="1767444033328" duration="551000" />
     </task>
     <servers />
   </component>
@@ -147,6 +150,29 @@
   </component>
   <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="origin/main" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="Add melee AI services and update character logic&#10;&#10;Introduced BTService_IsPlayerInMeleeRange and BTTask_MeleeAttack for AI melee behavior. Updated Enemy and Pickup classes to support new animation and const-correctness. Adjusted MyFirstCharacter movement, camera pitch, and stamina bar logic. Removed unused includes and deleted an obsolete animation asset." />
