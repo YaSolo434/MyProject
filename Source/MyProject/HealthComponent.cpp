@@ -31,8 +31,4 @@ void UHealthComponent::TakeDamage(int Damage) {
 	}
 }
 
-void UHealthComponent::AllowTakeDamage() {
-
-	CanTakeDamage = true;
-}
-
+void UHealthComponent::AllowTakeDamage() {CanTakeDamage = true; }

@@ -9,28 +9,46 @@
 
 
 // Sets default values
-AEnemy::AEnemy()
+// Sets default values
+AEnemy::AEnemy() :
+	 SwordMesh{CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Sword"))},
+	 HealthComp{CreateDefaultSubobject<UHealthComponent>(TEXT("Health"))},
+	 AttackBox{CreateDefaultSubobject<UBoxComponent>(TEXT("Attack Box"))},
+	 HealthBarWidget{CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBarWidget"))}
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	GetCharacterMovement()->MaxWalkSpeed = IdleSpeed;
-
-	HealthComp = CreateDefaultSubobject<UHealthComponent>(TEXT("Health"));
-	HealthBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBarWidget"));
-	HealthBarWidget->SetupAttachment(RootComponent);
-	HealthBarWidget->SetWidgetSpace(EWidgetSpace::World);
-	HealthBarWidget->SetDrawSize(FVector2D(100.f, 10.f));
-	HealthBarWidget->SetRelativeLocation(FVector(0.f, 0.f, 120.f));
-
-	SwordMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Sword"));
-	SwordMesh->SetupAttachment(GetMesh(), FName("R_HandSocket"));
+	if (HealthComp)
+	{
+		HealthBarWidget->SetupAttachment(RootComponent);
+		HealthBarWidget->SetWidgetSpace(EWidgetSpace::World);
+		HealthBarWidget->SetDrawSize(FVector2D(100.f, 10.f));
+		HealthBarWidget->SetRelativeLocation(FVector(0.f, 0.f, 120.f));
+	}
 	
-	AttackBox = CreateDefaultSubobject<UBoxComponent>("Attack Box");
-	AttackBox->SetupAttachment(GetMesh(), FName("R_HandSocket"));
+	if (SwordMesh)
+	{
+		SwordMesh->SetupAttachment(GetMesh(), FName("R_HandSocket"));
+	}
 	
+	if (AttackBox)
+	{
+		FAttachmentTransformRules const Rules{
+			EAttachmentRule::SnapToTarget,
+			EAttachmentRule::SnapToTarget,
+			EAttachmentRule::KeepWorld,
+			false };
+		
+		AttackBox->AttachToComponent(GetMesh(), Rules, FName("R_HandSocket"));
+		AttackBox->SetRelativeLocation(FVector(0.f, -58.f, 0.f));
+	}
+	
+
 	bIsDead = false;
 }
+
 
 void AEnemy::SetCharacterSpeed(float Speed)
 {
@@ -51,6 +69,8 @@ int32 AEnemy::MeleeAttack()
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 		
 		AnimInstance->Montage_Play(SwingMontage);
+		
+		// AttackBox->SetCollisionEnabled();
 	}
 	return 0;	
 }

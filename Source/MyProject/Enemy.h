@@ -63,6 +63,8 @@ public:
 	virtual void ReceiveDamage(AActor* DamageCauser, float DamageAmount) override;
 	
 	virtual UHealthComponent* GetHealthComponent() const override;
+	
+	FORCEINLINE UBoxComponent* GetAttackBox() const {return AttackBox; }
 
 protected:
 	

@@ -257,6 +257,7 @@ protected:
 
 
 	//AI
+	UPROPERTY()
 	class UAIPerceptionStimuliSourceComponent* StimulusSource;
 	
 	void SetupStimulusSource();

@@ -10,7 +10,13 @@
   <component name="ChangeListManager">
     <list default="true" id="5ce4939b-d64d-42f3-91e1-9be372f5b6d9" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.MyProject/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MyProject/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/BP_Classes/Animations/Sage/AnimNotifies/AttackNotifyState.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/BP_Classes/Animations/Sage/AnimNotifies/AttackNotifyState.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/BP_Classes/Enemies/BadSageFolder/BadSage.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/BP_Classes/Enemies/BadSageFolder/BadSage.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MyProject/BTTask_MeleeAttack.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MyProject/BTTask_MeleeAttack.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MyProject/Enemy.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MyProject/Enemy.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MyProject/Enemy.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MyProject/Enemy.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MyProject/HealthComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MyProject/HealthComponent.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MyProject/MyFirstCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MyProject/MyFirstCharacter.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,6 +41,7 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.6/Engine/Source/Runtime/AIModule/Classes/Perception/AIPerceptionComponent.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.6/Engine/Source/Runtime/AIModule/Classes/Perception/AISenseConfig_Sight.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.6/Engine/Source/Runtime/Engine/Classes/Animation/AnimNotifies/AnimNotify.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.6/Engine/Source/Runtime/Engine/Classes/GameFramework/Character.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.6/Engine/Source/Runtime/Engine/Classes/GameFramework/CharacterMovementComponent.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.6/Engine/Source/Runtime/Engine/Classes/GameFramework/NavMovementComponent.h" root0="FORCE_HIGHLIGHTING" />
@@ -141,7 +148,8 @@
       <workItem from="1767111640238" duration="12693000" />
       <workItem from="1767183669955" duration="356000" />
       <workItem from="1767443717598" duration="276000" />
-      <workItem from="1767444033328" duration="551000" />
+      <workItem from="1767444033328" duration="634000" />
+      <workItem from="1767691993101" duration="6409000" />
     </task>
     <servers />
   </component>

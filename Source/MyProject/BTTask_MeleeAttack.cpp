@@ -73,6 +73,8 @@ void UBTTask_MeleeAttack::OnMontageEnded(UAnimMontage* Montage, bool bInterrupte
 	
 	Enemy->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
 	
+	// Enemy->GetAttackBox()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	
 	UBlackboardComponent* BB = BTC->GetBlackboardComponent();
 	
 	FinishLatentTask(*BTC, (!bInterrupted) ? EBTNodeResult::Succeeded : EBTNodeResult::Failed);
