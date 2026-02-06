@@ -1,23 +1,20 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CombatInterface.h"
 #include "GameFramework/Character.h"
-#include "HealthComponent.h"
+#include "CombatInterface.h" 
 #include "DamageableInterface.h"
-#include "Components/CapsuleComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
-#include "Animation/AnimationAsset.h"
-#include "Animation/AnimInstance.h"
-#include "Animation/AnimMontage.h"
-#include "Sword.h"
-#include "BehaviorTree/BehaviorTree.h"
-#include "PatrolPath.h"
-#include "Components/BoxComponent.h"
 
 #include "Enemy.generated.h"
 
+class UAnimationAsset;
+class UAnimMontage;
+class UBehaviorTree;
+class UBoxComponent;
 class UWidgetComponent;
+class APatrolPath;
+class UHealthComponent;
+
 
 UCLASS()
 class MYPROJECT_API AEnemy : public ACharacter, public ICombatInterface, public IDamageableInterface

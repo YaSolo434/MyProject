@@ -1,16 +1,19 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Enemy.h"
-
-#include "BTTask_MeleeAttack.h"
-#include "EnemyAIController.h"
+#include "Components/CapsuleComponent.h"
+#include "Components/BoxComponent.h"
+#include "Components/WidgetComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Animation/AnimInstance.h"
+#include "HealthComponent.h"
 #include "HealthBar.h"
 #include "MyFirstCharacter.h"
-#include "Components/WidgetComponent.h"
+#include "EnemyAIController.h"
+#include "Blueprint/UserWidget.h"
+#include "BrainComponent.h"
 
 
-// Sets default values
-// Sets default values
 AEnemy::AEnemy() :
 	 SwordMesh{CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Sword"))},
 	 HealthComp{CreateDefaultSubobject<UHealthComponent>(TEXT("Health"))},
