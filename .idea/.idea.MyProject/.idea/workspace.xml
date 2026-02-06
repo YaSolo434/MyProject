@@ -10,18 +10,36 @@
   <component name="ChangeListManager">
     <list default="true" id="5ce4939b-d64d-42f3-91e1-9be372f5b6d9" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.MyProject/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MyProject/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/BP_Classes/Animations/Sage/AnimNotifies/AttackNotifyState.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/BP_Classes/Animations/Sage/AnimNotifies/AttackNotifyState.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/BP_Classes/Enemies/BadSageFolder/BT_Enemy.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/BP_Classes/Enemies/BadSageFolder/BT_Enemy.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/BP_Classes/Enemies/BadSageFolder/BadSage.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/BP_Classes/Enemies/BadSageFolder/BadSage.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MyProject/BTTask_MeleeAttack.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MyProject/BTTask_MeleeAttack.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/BP_Classes/Player/MyMyFirstCharacter.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/BP_Classes/Player/MyMyFirstCharacter.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Fab/House_A1/house_a1/StaticMeshes/house_a1.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Fab/House_A1/house_a1/StaticMeshes/house_a1.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/ItemData/TestData.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/ItemData/TestData.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Levels/NewMap.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Levels/NewMap.umap" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/MyProject/Enemy.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MyProject/Enemy.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/MyProject/Enemy.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MyProject/Enemy.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MyProject/HealthComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MyProject/HealthComponent.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MyProject/MyFirstCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MyProject/MyFirstCharacter.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/MyProject/MyFirstCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MyProject/MyFirstCharacter.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MyProject/MyFirstHUD.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MyProject/MyFirstHUD.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CopilotPersistence">
+    <persistenceIdMap>
+      <entry key="_C:/Users/oseos/Documents/Unreal Projects/MyProject" value="37HvKRUQDQPVyBL8E8Vhx3syLQX" />
+    </persistenceIdMap>
+  </component>
+  <component name="CopilotUserSelectedModel">
+    <selectedModels>
+      <entry key="edit-panel" value="GPT-5 mini" />
+      <entry key="chat-panel" value="Claude Sonnet 4.5" />
+      <entry key="agent-panel" value="Claude Sonnet 4.5" />
+    </selectedModels>
   </component>
   <component name="DpaMonitoringSettings">
     <option name="firstShow" value="false" />
@@ -47,6 +65,10 @@
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.6/Engine/Source/Runtime/Engine/Classes/GameFramework/NavMovementComponent.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/MyProject/CombatInterface.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/MyProject/CombatInterface.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/MyProject/Enemy.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/MyProject/Enemy.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/MyProject/MyFirstCharacter.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/MyProject/MyFirstCharacter.h" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="JsbtTreeLayoutManager">
     <layout place="tools.popupGrunt">
@@ -73,26 +95,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;C/C++ Project.MyProject.executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "C/C++ Project.MyProject.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "git-widget-placeholder": "main",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "vcs.Git",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RiderProblemsViewState">
     <hideBySeverity>
       <option value="15" />
@@ -113,6 +135,18 @@
         <option name="TERMINAL_INTERACTION_BEHAVIOR" value="AUTO_DETECT" />
         <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/MyProject.vcxproj" />
       </configuration_1>
+      <configuration_2 setup="1">
+        <option name="CONFIGURATION" value="Development" />
+        <option name="PLATFORM" value="x64" />
+        <option name="CURRENT_LAUNCH_PROFILE" value="Local" />
+        <option name="EXE_PATH" value="$(LocalDebuggerCommand)" />
+        <option name="PROGRAM_PARAMETERS" value="$(LocalDebuggerCommandArguments)" />
+        <option name="WORKING_DIRECTORY" value="$(LocalDebuggerWorkingDirectory)" />
+        <option name="PASS_PARENT_ENVS" value="1" />
+        <option name="USE_EXTERNAL_CONSOLE" value="0" />
+        <option name="TERMINAL_INTERACTION_BEHAVIOR" value="AUTO_DETECT" />
+        <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/MyProject.vcxproj" />
+      </configuration_2>
       <option name="DEFAULT_PROJECT_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/MyProject.vcxproj" />
       <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/MyProject.vcxproj" />
       <option name="AUTO_SELECT_PRIORITY" value="10010" />
@@ -150,6 +184,15 @@
       <workItem from="1767443717598" duration="276000" />
       <workItem from="1767444033328" duration="634000" />
       <workItem from="1767691993101" duration="6409000" />
+      <workItem from="1769781928091" duration="3312000" />
+      <workItem from="1770124848742" duration="270000" />
+      <workItem from="1770125283725" duration="81000" />
+      <workItem from="1770125447977" duration="87000" />
+      <workItem from="1770125650974" duration="214000" />
+      <workItem from="1770126531075" duration="1114000" />
+      <workItem from="1770384043253" duration="872000" />
+      <workItem from="1770385390052" duration="11880000" />
+      <workItem from="1770397335060" duration="533000" />
     </task>
     <servers />
   </component>

@@ -5,6 +5,7 @@
 #include "BTTask_MeleeAttack.h"
 #include "EnemyAIController.h"
 #include "HealthBar.h"
+#include "MyFirstCharacter.h"
 #include "Components/WidgetComponent.h"
 
 
@@ -43,16 +44,64 @@ AEnemy::AEnemy() :
 		
 		AttackBox->AttachToComponent(GetMesh(), Rules, FName("R_HandSocket"));
 		AttackBox->SetRelativeLocation(FVector(0.f, -58.f, 0.f));
+		AttackBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		AttackBox->SetCollisionProfileName(TEXT("EnemyAttack"));
 	}
 	
 
 	bIsDead = false;
 }
 
+// Called when the game starts or when spawned
+void AEnemy::BeginPlay()
+{
+	Super::BeginPlay();
+
+	HealthComp->OnDeath.AddDynamic(this, &AEnemy::Die);
+	HealthComp->OnDamaged.AddDynamic(this, &AEnemy::HitAnimation);
+	HealthComp->OnHealthChanged.AddDynamic(this, &AEnemy::UpdateHealthBar);
+	
+	AttackBox->OnComponentBeginOverlap.AddDynamic(this, &AEnemy::OnAttackOverlap);
+}
+
+// Called every frame
+void AEnemy::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+}
 
 void AEnemy::SetCharacterSpeed(float Speed)
 {
 	GetCharacterMovement()->MaxWalkSpeed = Speed;
+}
+
+void AEnemy::EnableSwordHitbox()
+{
+	if (bIsAttacking)
+	{
+		// bIsAttacking = false;
+		AttackBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	}
+}
+
+void AEnemy::DisableSwordHitbox()
+{
+	AttackBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+void AEnemy::OnAttackOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+                             int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Overlapped with character"));
+	
+	if (bIsAttacking && OtherActor && (OtherActor != this))
+	{
+		if (AMyFirstCharacter* Player = Cast<AMyFirstCharacter>(OtherActor))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Applying Damage"));
+			ApplyDamage(Player, Damage);
+		}
+	}
 }
 
 float AEnemy::GetCharacterSpeed() const
@@ -166,28 +215,4 @@ void AEnemy::UpdateHealthBar(float CurrentHealth, float MaxHealth) {
 			HealthBar->SetHealthProgressPrecent(CurrentHealth / MaxHealth);
 		}
 	}
-}
-
-// Called when the game starts or when spawned
-void AEnemy::BeginPlay()
-{
-	Super::BeginPlay();
-
-	HealthComp->OnDeath.AddDynamic(this, &AEnemy::Die);
-	HealthComp->OnDamaged.AddDynamic(this, &AEnemy::HitAnimation);
-	HealthComp->OnHealthChanged.AddDynamic(this, &AEnemy::UpdateHealthBar);
-	
-	// PlayAnimMontage(SwingMontage);
-}
-
-// Called every frame
-void AEnemy::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-
-// Called to bind functionality to input
-void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }

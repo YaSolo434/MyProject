@@ -6,9 +6,11 @@
 #include "GameFramework/Character.h"
 #include "TakingXp.h"
 #include "InteractionInterface.h"
+#include "DamageableInterface.h"
 
 #include "MyFirstCharacter.generated.h"
 
+class UHealthBar;
 class UCameraComponent;
 class USpringArmComponent;
 class UStaticMeshComponent;
@@ -48,7 +50,7 @@ struct FInteractionData
 
 
 UCLASS()
-class MYPROJECT_API AMyFirstCharacter : public ACharacter, public ITakingXp
+class MYPROJECT_API AMyFirstCharacter : public ACharacter, public ITakingXp, public IDamageableInterface
 {
 	GENERATED_BODY()
 
@@ -82,6 +84,19 @@ public:
 	void LineTrace();
 
 	void DropItem(UItemBase* ItemToDrop, const int32 QuantityToDrop);
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UHealthComponent* HealthComponent;
+	
+	virtual void ApplyDamage(AActor* DamagedActor, float DamageAmount) override;
+	
+	virtual bool IsDamageable() const override;
+	
+	virtual bool IsActorDead(AActor* Actor) const override;
+	
+	virtual void ReceiveDamage(AActor* DamageCauser, float DamageAmount) override;
+	
+	virtual UHealthComponent* GetHealthComponent() const override;
 
 private:
 
@@ -204,6 +219,25 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Combat|SFX")
 	USoundBase* SwordHitSound;
+	
+	UFUNCTION()
+	void UpdateHealthBar(float CurrentHealth, float MaxHealth);
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
+	UAnimMontage* HitReactMontage;
+	
+	UFUNCTION()
+	void PlayHitAnim();
+	
+	
+	UPROPERTY(BlueprintReadOnly)
+	bool bIsDead = false;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
+	UAnimationAsset* DeathAnim;
+	
+	UFUNCTION()
+	void Die();
 
 	UPROPERTY(BlueprintReadWrite)
 	bool HasPlayedHitSound = false;
@@ -217,8 +251,11 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "UI")
 	TSubclassOf<class UStaminaBar> StaminaBarWidgetClass;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, Category = "UI")
 	UStaminaBar* StaminaBarWidget;
+	
+	UPROPERTY()
+	UHealthBar* HealthBarWidget;
 
 	UFUNCTION()
 	void UpdateStaminaBar() const;

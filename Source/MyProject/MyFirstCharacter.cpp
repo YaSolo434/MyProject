@@ -10,7 +10,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundBase.h"
 #include "Sword.h"
-#include "HealthComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputMappingContext.h"
@@ -19,6 +18,7 @@
 #include "Engine/World.h"
 #include "Grass.h"
 #include "DamageableInterface.h"
+#include "HealthBar.h"
 #include "StaminaBar.h"
 #include "MyFirstHUD.h"
 #include "InventoryComponent.h"
@@ -55,6 +55,12 @@ AMyFirstCharacter::AMyFirstCharacter() {
 	InteractionCheckFrequency = 0.1f;
 	InteractionCheckDistance = 225.0f;
 	BaseEyeHeight = 78.f;
+	
+	//set health comp
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
+	HealthComponent->CurrentHealth = 10.f;
+	HealthComponent->MaxHealth = 10.f;
+	
 }
 
 // Called when the game starts or when spawned
@@ -84,10 +90,19 @@ void AMyFirstCharacter::BeginPlay() {
 
 	HUD = Cast<AMyFirstHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 
+	if (HUD)
+	{
+		HealthBarWidget = HUD->GetHealthBarWidget();
+	}
+
 	//limit the camera
 	APlayerCameraManager* const PlayerCameraManager = GetWorld()->GetFirstPlayerController()->PlayerCameraManager;
 	PlayerCameraManager->ViewPitchMin = -50.f;
 	PlayerCameraManager->ViewPitchMax = 20.f;
+	
+	HealthComponent->OnDeath.AddDynamic(this, &AMyFirstCharacter::Die);
+	HealthComponent->OnDamaged.AddDynamic(this, &AMyFirstCharacter::PlayHitAnim);
+	HealthComponent->OnHealthChanged.AddDynamic(this, &AMyFirstCharacter::UpdateHealthBar);
 }
 
 // Called every frame
@@ -305,6 +320,53 @@ void AMyFirstCharacter::SpawnSword() {
 	}
 }
 
+void AMyFirstCharacter::UpdateHealthBar(float CurrentHealth, float MaxHealth)
+{
+	if (HealthBarWidget)
+	{
+		HealthBarWidget->SetHealthProgressPrecent(CurrentHealth / MaxHealth);
+	}
+}
+
+void AMyFirstCharacter::PlayHitAnim()
+{
+	if (!bIsDead)
+	{
+		//get Anim Instance
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+		//play anim
+		AnimInstance->Montage_Play(HitReactMontage);
+	}
+}
+
+void AMyFirstCharacter::Die()
+{
+	if (bIsDead) return;
+	bIsDead = true;
+	
+	// Disable movement
+	GetCharacterMovement()->StopMovementImmediately();
+	GetCharacterMovement()->DisableMovement();
+	
+	// Disable visibility signal
+	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
+	
+	if (UAnimInstance* AnimIns = GetMesh()->GetAnimInstance())
+	{
+		AnimIns->StopAllMontages(0.1f);
+	}
+	// Disable collision to prevent unintended behavior
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	
+	//play death anim
+	GetMesh()->PlayAnimation(DeathAnim, false);
+	
+	StaminaBarWidget->SetVisibility(ESlateVisibility::Collapsed);
+	
+	SetLifeSpan(5.f);
+}
+
 USoundBase* AMyFirstCharacter::GetRandomWalkingSound() const {
 	if (WalkingSounds.Num() > 0) {
 		int32 Index = FMath::RandRange(0, WalkingSounds.Num() - 1);
@@ -319,7 +381,6 @@ void AMyFirstCharacter::UpdateStaminaBar() const {
 		StaminaBarWidget->SetStaminaPrecent(CurSprintTime / MaxSprintTime);
 	}
 }
-
 
 void AMyFirstCharacter::Attack(const FInputActionValue& Value) {
 	if (AttackMontage) {
@@ -531,6 +592,42 @@ void AMyFirstCharacter::DropItem(UItemBase* ItemToDrop, const int32 QuantityToDr
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Item to drop was somehow failed!"));
 	}
+}
+
+void AMyFirstCharacter::ApplyDamage(AActor* DamagedActor, float DamageAmount)
+{
+	if (DamagedActor && DamageAmount > 0.f)
+	{
+		IDamageableInterface* Damageable = Cast<IDamageableInterface>(DamagedActor);
+		
+		if (Damageable && Damageable->IsDamageable())
+		{
+			Damageable->ReceiveDamage(this, DamageAmount);
+		}
+	}
+}
+
+void AMyFirstCharacter::ReceiveDamage(AActor* DamageCauser, float DamageAmount)
+{
+	if (HealthComponent && DamageCauser && DamageAmount > 0.f)
+	{
+		HealthComponent->TakeDamage(DamageAmount);
+	}
+}
+
+bool AMyFirstCharacter::IsDamageable() const
+{
+	return true;
+}
+
+bool AMyFirstCharacter::IsActorDead(AActor* Actor) const
+{
+	return bIsDead;
+}
+
+UHealthComponent* AMyFirstCharacter::GetHealthComponent() const
+{
+	return HealthComponent;
 }
 
 void AMyFirstCharacter::UpdateInteractionWidget() const {

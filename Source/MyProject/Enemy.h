@@ -30,9 +30,6 @@ public:
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
 	void SetCharacterSpeed(float Speed);
 
@@ -41,6 +38,20 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float ChaseSpeed = 450.f;
+	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Combat")
+	bool bIsAttacking = false;
+	
+	UFUNCTION(BlueprintCallable)
+	void EnableSwordHitbox();
+	
+	UFUNCTION(BlueprintCallable)
+	void DisableSwordHitbox();
+	
+	UFUNCTION()
+	void OnAttackOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	
 	
 	APatrolPath* GetPatrolPath() const { return PatrolPath; }
 	
@@ -87,12 +98,14 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Combat", meta = (AllowPrivateAccess = "true"))
 	UBoxComponent* AttackBox;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	float Damage = 1.f;
 
 	UFUNCTION()
 	void Die();
 	
 	bool bIsDead = false;
-
+	
 	UFUNCTION()
 	void HitAnimation();
 

@@ -48,6 +48,8 @@ public:
 	void HideInteractionWidget() const;
 	void UpdateInteractionWidget(const FInteractableData* InteractableData) const;
 
+	FORCEINLINE UHealthBar* GetHealthBarWidget() const { return HealthBarWidget; };
+
 protected:
 	//=================================================================================================
 	// PROPERTIES & VARIABLES
