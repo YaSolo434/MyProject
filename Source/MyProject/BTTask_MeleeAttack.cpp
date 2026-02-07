@@ -6,6 +6,7 @@
 #include "AIController.h"
 #include "Enemy.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 UBTTask_MeleeAttack::UBTTask_MeleeAttack()
 {

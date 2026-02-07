@@ -78,21 +78,13 @@ void AMyFirstCharacter::BeginPlay() {
 	}
 	
 	SpawnSword();
-
-	if (StaminaBarWidgetClass) 
-	{
-		StaminaBarWidget = CreateWidget<UStaminaBar>(GetWorld(), StaminaBarWidgetClass);
-		if (StaminaBarWidget) 
-		{
-			StaminaBarWidget->AddToViewport();
-		}
-	}
-
+	
 	HUD = Cast<AMyFirstHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 
 	if (HUD)
 	{
 		HealthBarWidget = HUD->GetHealthBarWidget();
+		StaminaBarWidget = HUD->GetStaminaBarWidget();
 	}
 
 	//limit the camera
@@ -191,7 +183,7 @@ void AMyFirstCharacter::SprintAdj(float DeltaTime)
 			CanSprint = false;
 			GetCharacterMovement()->MaxWalkSpeed = MovementSpeed;
 		}
-		UpdateStaminaBar();
+		UpdateStaminaBarWidget();
 	}
 	else {
 		RegenTimer += DeltaTime;
@@ -204,9 +196,9 @@ void AMyFirstCharacter::SprintAdj(float DeltaTime)
 				RegenTimer = 0.f;
 			}
 		}
-		UpdateStaminaBar();
+		UpdateStaminaBarWidget();
 	}
-	UpdateStaminaBar();
+	UpdateStaminaBarWidget();
 }
 
 void AMyFirstCharacter::Jump() {
@@ -363,22 +355,27 @@ void AMyFirstCharacter::Die()
 	GetMesh()->PlayAnimation(DeathAnim, false);
 	
 	StaminaBarWidget->SetVisibility(ESlateVisibility::Collapsed);
+	HealthBarWidget->SetVisibility(ESlateVisibility::Collapsed);
 	
 	SetLifeSpan(5.f);
+	EquippedSword->SetLifeSpan(5.f);
+	
+	EquippedSword = nullptr;
 }
 
 USoundBase* AMyFirstCharacter::GetRandomWalkingSound() const {
 	if (WalkingSounds.Num() > 0) {
-		int32 Index = FMath::RandRange(0, WalkingSounds.Num() - 1);
+		int32 const Index = FMath::RandRange(0, WalkingSounds.Num() - 1);
 		
 		return WalkingSounds[Index];
 	}
 	return nullptr;
 }
 
-void AMyFirstCharacter::UpdateStaminaBar() const {
-	if (StaminaBarWidget) {
-		StaminaBarWidget->SetStaminaPrecent(CurSprintTime / MaxSprintTime);
+void AMyFirstCharacter::UpdateStaminaBarWidget() const {
+	if (HUD)
+	{
+		HUD->UpdateStaminaBar(CurSprintTime, MaxSprintTime);
 	}
 }
 

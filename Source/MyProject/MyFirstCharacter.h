@@ -107,7 +107,7 @@ private:
 	USpringArmComponent* CameraBoom;
 
 	UPROPERTY(EditAnywhere, Category = "Movement Settings")
-	float MovementSpeed = 300.f;
+	float MovementSpeed = 200.f;
 	float RotationSpeed = 1.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Movement Settings")
@@ -115,7 +115,7 @@ private:
 
 	bool CanSprint = true;
 	bool IsSprinting = false;
-	bool IsMoving = false;
+	bool IsMoving = true;
 
 	float CurSprintTime = MaxSprintTime;
 	float MaxSprintTime = 5.f;
@@ -223,6 +223,9 @@ protected:
 	UFUNCTION()
 	void UpdateHealthBar(float CurrentHealth, float MaxHealth);
 	
+	UFUNCTION()
+	void UpdateStaminaBarWidget() const;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 	UAnimMontage* HitReactMontage;
 	
@@ -247,22 +250,14 @@ protected:
 
 	UFUNCTION(BlueprintCallable, Category = "Audio")
 	USoundBase* GetRandomWalkingSound() const;
-
-	UPROPERTY(EditAnywhere, Category = "UI")
-	TSubclassOf<class UStaminaBar> StaminaBarWidgetClass;
-
-	UPROPERTY(EditAnywhere, Category = "UI")
+	
+	UPROPERTY()
 	UStaminaBar* StaminaBarWidget;
 	
 	UPROPERTY()
 	UHealthBar* HealthBarWidget;
 
-	UFUNCTION()
-	void UpdateStaminaBar() const;
-
-
-
-
+	
 	UPROPERTY(VisibleAnywhere, Category = "Interaction")
 	TScriptInterface<IInteractionInterface> TargetInteractable;
 

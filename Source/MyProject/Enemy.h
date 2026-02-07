@@ -14,6 +14,7 @@ class UBoxComponent;
 class UWidgetComponent;
 class APatrolPath;
 class UHealthComponent;
+class UCharacterMovementComponent;
 
 
 UCLASS()

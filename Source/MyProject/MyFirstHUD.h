@@ -32,6 +32,9 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 	TSubclassOf<UHealthBar> HealthBarClass;
+	
+	UPROPERTY(EditAnywhere, Category = "Widgets")
+	TSubclassOf<class UStaminaBar> StaminaBarWidgetClass;
 
 	bool IsMenuVisible;
 
@@ -47,8 +50,11 @@ public:
 	void ShowInteractionWidget() const;
 	void HideInteractionWidget() const;
 	void UpdateInteractionWidget(const FInteractableData* InteractableData) const;
+	
+	void UpdateStaminaBar(float const CurSprintTime, float const MaxSprintTime) const;
 
 	FORCEINLINE UHealthBar* GetHealthBarWidget() const { return HealthBarWidget; };
+	FORCEINLINE UStaminaBar* GetStaminaBarWidget() const { return StaminaBarWidget; };
 
 protected:
 	//=================================================================================================
@@ -62,6 +68,9 @@ protected:
 	
 	UPROPERTY()
 	UHealthBar* HealthBarWidget;
+	
+	UPROPERTY()
+	UStaminaBar* StaminaBarWidget;
 
 	//=================================================================================================
 	// FUNCTIONS

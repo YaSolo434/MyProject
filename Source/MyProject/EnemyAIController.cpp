@@ -6,6 +6,7 @@
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "BehaviorTree/BehaviorTree.h"
 #include "MyFirstCharacter.h"
 
 AEnemyAIController::AEnemyAIController(FObjectInitializer const& ObjectInitializer)

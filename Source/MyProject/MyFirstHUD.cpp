@@ -5,6 +5,7 @@
 #include "MainMenu.h"
 #include "InteractionWidget.h"
 #include "HealthBar.h"
+#include "StaminaBar.h"
 #include "Components/CanvasPanelSlot.h"
 #include "Components/PanelSlot.h"
 #include "Components/ProgressBar.h"
@@ -80,6 +81,14 @@ void AMyFirstHUD::UpdateInteractionWidget(const FInteractableData* InteractableD
 
 }
 
+void AMyFirstHUD::UpdateStaminaBar(float const CurSprintTime, float const MaxSprintTime) const
+{
+	if (StaminaBarWidget)
+	{
+		StaminaBarWidget->SetStaminaPrecent(CurSprintTime / MaxSprintTime);
+	}
+}
+
 void AMyFirstHUD::BeginPlay() {
 
 	Super::BeginPlay();
@@ -113,5 +122,12 @@ void AMyFirstHUD::BeginPlay() {
 				CanvasSlot->SetAnchors(FAnchors(0.f, 0.f));
 			}
 		}
-	}	
+	}
+	
+	if (StaminaBarWidgetClass) 
+	{
+		StaminaBarWidget = CreateWidget<UStaminaBar>(GetWorld(), StaminaBarWidgetClass);
+		StaminaBarWidget->AddToViewport(-1);
+		StaminaBarWidget->SetVisibility(ESlateVisibility::Visible);
+	}
 }
