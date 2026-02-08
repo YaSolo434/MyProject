@@ -27,7 +27,7 @@ AEnemy::AEnemy() :
 	if (HealthComp)
 	{
 		HealthBarWidget->SetupAttachment(RootComponent);
-		HealthBarWidget->SetWidgetSpace(EWidgetSpace::World);
+		HealthBarWidget->SetWidgetSpace(EWidgetSpace::Screen);
 		HealthBarWidget->SetDrawSize(FVector2D(100.f, 10.f));
 		HealthBarWidget->SetRelativeLocation(FVector(0.f, 0.f, 120.f));
 	}

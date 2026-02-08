@@ -13,7 +13,49 @@
 
 AMyFirstHUD::AMyFirstHUD() 
 {
+}
 
+void AMyFirstHUD::BeginPlay() {
+
+	Super::BeginPlay();
+
+	if (MainMenuClass) 
+	{
+		MainMenu = CreateWidget<UMainMenu>(GetWorld(), MainMenuClass);
+		MainMenu->AddToViewport(5);
+		MainMenu->SetVisibility(ESlateVisibility::Collapsed);
+	}
+
+	if (InteractionWidgetClass) 
+	{
+		InteractionWidget = CreateWidget<UInteractionWidget>(GetWorld(), InteractionWidgetClass);
+		InteractionWidget->AddToViewport(-1);
+		InteractionWidget->SetVisibility(ESlateVisibility::Collapsed);
+	}
+	
+	if (HealthBarClass)
+	{
+		HealthBarWidget = CreateWidget<UHealthBar>(GetWorld(), HealthBarClass);
+		HealthBarWidget->AddToViewport(-1);
+		HealthBarWidget->SetVisibility(ESlateVisibility::Visible);
+		
+		if (UProgressBar const* const ProgressBar = Cast<UProgressBar>(HealthBarWidget->GetWidgetFromName("HealthProgressBar")))
+		{
+			if (UCanvasPanelSlot* CanvasSlot = Cast<UCanvasPanelSlot>(ProgressBar->Slot))
+			{
+				CanvasSlot->SetPosition(FVector2D(1460.f, 80.f));
+				CanvasSlot->SetSize(FVector2D(350.f, 65.f));
+				CanvasSlot->SetAnchors(FAnchors(0.f, 0.f));
+			}
+		}
+	}
+	
+	if (StaminaBarWidgetClass) 
+	{
+		StaminaBarWidget = CreateWidget<UStaminaBar>(GetWorld(), StaminaBarWidgetClass);
+		StaminaBarWidget->AddToViewport(-1);
+		StaminaBarWidget->SetVisibility(ESlateVisibility::Visible);
+	}
 }
 
 void AMyFirstHUD::DisplayMenu() {
@@ -86,48 +128,5 @@ void AMyFirstHUD::UpdateStaminaBar(float const CurSprintTime, float const MaxSpr
 	if (StaminaBarWidget)
 	{
 		StaminaBarWidget->SetStaminaPrecent(CurSprintTime / MaxSprintTime);
-	}
-}
-
-void AMyFirstHUD::BeginPlay() {
-
-	Super::BeginPlay();
-
-	if (MainMenuClass) 
-	{
-		MainMenu = CreateWidget<UMainMenu>(GetWorld(), MainMenuClass);
-		MainMenu->AddToViewport(5);
-		MainMenu->SetVisibility(ESlateVisibility::Collapsed);
-	}
-
-	if (InteractionWidgetClass) 
-	{
-		InteractionWidget = CreateWidget<UInteractionWidget>(GetWorld(), InteractionWidgetClass);
-		InteractionWidget->AddToViewport(-1);
-		InteractionWidget->SetVisibility(ESlateVisibility::Collapsed);
-	}
-	
-	if (HealthBarClass)
-	{
-		HealthBarWidget = CreateWidget<UHealthBar>(GetWorld(), HealthBarClass);
-		HealthBarWidget->AddToViewport(-1);
-		HealthBarWidget->SetVisibility(ESlateVisibility::Visible);
-		
-		if (UProgressBar const* const ProgressBar = Cast<UProgressBar>(HealthBarWidget->GetWidgetFromName("HealthProgressBar")))
-		{
-			if (UCanvasPanelSlot* CanvasSlot = Cast<UCanvasPanelSlot>(ProgressBar->Slot))
-			{
-				CanvasSlot->SetPosition(FVector2D(1460.f, 80.f));
-				CanvasSlot->SetSize(FVector2D(350.f, 65.f));
-				CanvasSlot->SetAnchors(FAnchors(0.f, 0.f));
-			}
-		}
-	}
-	
-	if (StaminaBarWidgetClass) 
-	{
-		StaminaBarWidget = CreateWidget<UStaminaBar>(GetWorld(), StaminaBarWidgetClass);
-		StaminaBarWidget->AddToViewport(-1);
-		StaminaBarWidget->SetVisibility(ESlateVisibility::Visible);
 	}
 }
