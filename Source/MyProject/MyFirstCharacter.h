@@ -79,6 +79,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	bool IsAttacking;
+	
+	UPROPERTY(BlueprintReadWrite)
+	bool HasPlayedHitSound = false;
 
 	UFUNCTION(BlueprintCallable)
 	void LineTrace();
@@ -241,10 +244,7 @@ protected:
 	
 	UFUNCTION()
 	void Die();
-
-	UPROPERTY(BlueprintReadWrite)
-	bool HasPlayedHitSound = false;
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Audio")
 	TArray<USoundBase*> WalkingSounds;
 

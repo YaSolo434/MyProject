@@ -18,7 +18,7 @@ UBTTask_MeleeAttack::UBTTask_MeleeAttack()
 
 EBTNodeResult::Type UBTTask_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	auto* Memory = (FMeleeTaskMemory*)NodeMemory;
+	FMeleeTaskMemory* Memory = CastInstanceNodeMemory<FMeleeTaskMemory>(NodeMemory);
 	Memory->bIsFinished = false;
 	Memory->OwnerComp = &OwnerComp;
 	
@@ -63,7 +63,7 @@ EBTNodeResult::Type UBTTask_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& Own
 
 void UBTTask_MeleeAttack::OnMontageEnded(UAnimMontage* Montage, bool bInterrupted, uint8* NodeMemory)
 {
-	auto* Memory = (FMeleeTaskMemory*)NodeMemory;
+	FMeleeTaskMemory* Memory = CastInstanceNodeMemory<FMeleeTaskMemory>(NodeMemory);
 	if (Memory->bIsFinished) {return;}
 	
 	Memory->bIsFinished = true;
@@ -83,7 +83,7 @@ void UBTTask_MeleeAttack::OnMontageEnded(UAnimMontage* Montage, bool bInterrupte
 
 EBTNodeResult::Type UBTTask_MeleeAttack::AbortTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	auto* Memory = (FMeleeTaskMemory*)NodeMemory;
+	FMeleeTaskMemory* Memory = CastInstanceNodeMemory<FMeleeTaskMemory>(NodeMemory);
 	if (Memory->bIsFinished) {return EBTNodeResult::Aborted;}
 	
 	Memory->bIsFinished = true;

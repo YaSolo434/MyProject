@@ -105,10 +105,10 @@ void AMyFirstCharacter::Tick(float DeltaTime) {
 	DashCooldown(DeltaTime);
 
 	// making movement more smooth
-	FVector Velocity = GetVelocity();
-	FVector HorizontalVelocity = FVector(Velocity.X, Velocity.Y, 0.f);
-
-	bool bIsMoving = HorizontalVelocity.SizeSquared() > KINDA_SMALL_NUMBER;
+	FVector const Velocity = GetVelocity();
+	FVector const HorizontalVelocity = FVector(Velocity.X, Velocity.Y, 0.f);
+	
+	bool const bIsMoving = HorizontalVelocity.SizeSquared() > KINDA_SMALL_NUMBER;
 	GetCharacterMovement()->bOrientRotationToMovement = bIsMoving;
 	
 	SprintAdj(DeltaTime);

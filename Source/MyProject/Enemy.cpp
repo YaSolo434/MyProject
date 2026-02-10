@@ -29,6 +29,7 @@ AEnemy::AEnemy() :
 		HealthBarWidget->SetupAttachment(RootComponent);
 		HealthBarWidget->SetWidgetSpace(EWidgetSpace::Screen);
 		HealthBarWidget->SetDrawSize(FVector2D(100.f, 10.f));
+		HealthBarWidget->SetInitialLayerZOrder(1);
 		HealthBarWidget->SetRelativeLocation(FVector(0.f, 0.f, 120.f));
 	}
 	
@@ -204,7 +205,7 @@ void AEnemy::Die() {
 void AEnemy::HitAnimation() {
 	if (!bIsDead)
 	{
-		//get Anim Insatnce
+		//get Anim Instance
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 
 		//play anim
