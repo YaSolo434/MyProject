@@ -7,6 +7,7 @@
 
 #include "Enemy.generated.h"
 
+class AMyFirstCharacter;
 class UAnimationAsset;
 class UAnimMontage;
 class UBehaviorTree;

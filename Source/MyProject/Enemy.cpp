@@ -12,6 +12,7 @@
 #include "EnemyAIController.h"
 #include "Blueprint/UserWidget.h"
 #include "BrainComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 
 AEnemy::AEnemy() :
@@ -27,9 +28,8 @@ AEnemy::AEnemy() :
 	if (HealthComp)
 	{
 		HealthBarWidget->SetupAttachment(RootComponent);
-		HealthBarWidget->SetWidgetSpace(EWidgetSpace::Screen);
+		HealthBarWidget->SetWidgetSpace(EWidgetSpace::World);
 		HealthBarWidget->SetDrawSize(FVector2D(100.f, 10.f));
-		HealthBarWidget->SetInitialLayerZOrder(1);
 		HealthBarWidget->SetRelativeLocation(FVector(0.f, 0.f, 120.f));
 	}
 	
@@ -61,9 +61,13 @@ void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
-	HealthComp->OnDeath.AddDynamic(this, &AEnemy::Die);
-	HealthComp->OnDamaged.AddDynamic(this, &AEnemy::HitAnimation);
-	HealthComp->OnHealthChanged.AddDynamic(this, &AEnemy::UpdateHealthBar);
+	if (HealthComp)
+	{
+		HealthComp->OnDeath.AddDynamic(this, &AEnemy::Die);
+		HealthComp->OnDamaged.AddDynamic(this, &AEnemy::HitAnimation);
+		HealthComp->OnHealthChanged.AddDynamic(this, &AEnemy::UpdateHealthBar);
+		
+	}
 	
 	AttackBox->OnComponentBeginOverlap.AddDynamic(this, &AEnemy::OnAttackOverlap);
 }
@@ -72,6 +76,13 @@ void AEnemy::BeginPlay()
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+	FVector const CameraLocation = GetWorld()->GetFirstPlayerController()->PlayerCameraManager->GetCameraLocation();
+	FVector const WidgetLocation = HealthBarWidget->GetComponentLocation();
+	
+	FRotator const LookAtRot = UKismetMathLibrary::FindLookAtRotation(WidgetLocation, CameraLocation);
+	
+	HealthBarWidget->SetWorldRotation(LookAtRot);
 }
 
 void AEnemy::SetCharacterSpeed(float Speed)

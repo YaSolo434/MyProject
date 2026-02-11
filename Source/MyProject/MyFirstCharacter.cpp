@@ -140,6 +140,7 @@ void AMyFirstCharacter::StopMoveForward(const FInputActionValue& Value) {
 	IsMoving = false;
 	CachedMoveInput.X = 0.f;
 }
+
 //MoveRight
 void AMyFirstCharacter::MoveRight(const FInputActionValue& Value) {	
 	if (!IsLanding) {
