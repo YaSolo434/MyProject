@@ -114,7 +114,8 @@ void AMyFirstCharacter::Tick(float DeltaTime) {
 	SprintAdj(DeltaTime);
 	
 	//check trace line shooting frequency
-	if (GetWorld()->TimeSince(InteractionData.LastInteractionCheckTime) > InteractionCheckFrequency) {
+	if (GetWorld()->TimeSince(InteractionData.LastInteractionCheckTime) > InteractionCheckFrequency) 
+	{
 		PerformInteractionCheck();
 	}
 }

@@ -76,13 +76,13 @@ void AEnemy::BeginPlay()
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
+		
 	FVector const CameraLocation = GetWorld()->GetFirstPlayerController()->PlayerCameraManager->GetCameraLocation();
 	FVector const WidgetLocation = HealthBarWidget->GetComponentLocation();
-	
+		
 	FRotator const LookAtRot = UKismetMathLibrary::FindLookAtRotation(WidgetLocation, CameraLocation);
-	
-	HealthBarWidget->SetWorldRotation(LookAtRot);
+		
+	HealthBarWidget->SetWorldRotation(FRotator(0.f, LookAtRot.Yaw, 0.f));
 }
 
 void AEnemy::SetCharacterSpeed(float Speed)

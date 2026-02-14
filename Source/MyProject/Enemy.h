@@ -119,4 +119,10 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
 	APatrolPath* PatrolPath;
+	
+	// UPROPERTY()
+	// float LastHealthWidgetInteractionTime;
+	//
+	// UPROPERTY()
+	// float HealthWidgetCheckFrequency = 0.1f;
 };
