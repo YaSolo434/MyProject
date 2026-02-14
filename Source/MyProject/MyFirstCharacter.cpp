@@ -176,7 +176,7 @@ void AMyFirstCharacter::StopSprint(const FInputActionValue& Value) {
 
 void AMyFirstCharacter::SprintAdj(float DeltaTime) 
 {
-	if (IsSprinting && CanSprint) 
+	if (IsSprinting && CanSprint && !IsJumping) 
 	{
 		CurSprintTime -= DeltaTime;
 		RegenTimer = 0.f;
@@ -359,10 +359,9 @@ void AMyFirstCharacter::Die()
 	StaminaBarWidget->SetVisibility(ESlateVisibility::Collapsed);
 	HealthBarWidget->SetVisibility(ESlateVisibility::Collapsed);
 	
-	SetLifeSpan(5.f);
-	EquippedSword->SetLifeSpan(5.f);
 	
-	EquippedSword = nullptr;
+	FString const WorldName = GetWorld()->GetName();
+	UGameplayStatics::OpenLevel(this, FName(*WorldName), false);
 }
 
 USoundBase* AMyFirstCharacter::GetRandomWalkingSound() const {
