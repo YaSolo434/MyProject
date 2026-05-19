@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "5.6",
+	"EngineAssociation": "5.7",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -9,10 +9,7 @@
 			"Type": "Runtime",
 			"LoadingPhase": "Default",
 			"AdditionalDependencies": [
-				"Engine",
-				"UMG",
-				"CoreUObject",
-				"AIModule"
+				"Engine"
 			]
 		}
 	],
@@ -23,11 +20,6 @@
 			"TargetAllowList": [
 				"Editor"
 			]
-		},
-		{
-			"Name": "ThreepeatAnimTools",
-			"Enabled": true,
-			"MarketplaceURL": "com.epicgames.launcher://ue/Fab/product/576ae5f6-df60-42cc-b0e7-5681beb6d585"
 		}
 	]
 }
